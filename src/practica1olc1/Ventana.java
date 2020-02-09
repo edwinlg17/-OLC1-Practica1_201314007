@@ -5,12 +5,16 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.border.TitledBorder;
 
 public class Ventana extends JFrame {
@@ -28,7 +32,14 @@ public class Ventana extends JFrame {
     private JPanel jpEnt;
     private JPanel jpVis;
     private JPanel jpSal;
-
+    
+    private JButton jbAna;
+    private JButton jbGenAut;
+    private JTextArea jtaEnt;
+    private JScrollPane jspEnt;
+    
+    private JTextArea jtaSal;
+    
     //////////////// CONTRUCTOR
     public Ventana() {
         formatoFormulario();
@@ -97,7 +108,39 @@ public class Ventana extends JFrame {
         jpEnt.setLayout(new GridBagLayout());
         jpEnt.setBorder(new TitledBorder("Entrada"));
         
-        establecerGBC(0, 0, 1, 1, 1.0, 1.0);
+        jtaEnt = new JTextArea();
+        jspEnt = new JScrollPane(jtaEnt);
+        establecerGBC(0, 0, 2, 1, 1.0, 1.0);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        jpEnt.add(jspEnt, gbc);
+        
+        jbAna = new JButton("Analizar");
+        jbAna.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                accionBotonAnalizar(e);
+            }
+        });
+        establecerGBC(0, 1, 1, 1, 1.0, 0.03);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        jpEnt.add(jbAna, gbc);
+        
+        jbGenAut = new JButton("Generar Automata");
+        jbGenAut.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                accionBotonGenerarAutomata(e);
+            }
+        });
+        establecerGBC(1, 1, 1, 1, 1.0, 0.03);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        jpEnt.add(jbGenAut, gbc);
+        
+        
+        establecerGBC(0, 0, 1, 1, 0.75, 1.0);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(10, 10, 5, 5);
         this.add(jpEnt, gbc);
@@ -106,7 +149,6 @@ public class Ventana extends JFrame {
         jpVis = new JPanel();
         jpVis.setLayout(new GridBagLayout());
         jpVis.setBorder(new TitledBorder("Grafico"));
-        
         establecerGBC(1, 0, 1, 1, 1.0, 1.0);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(10, 5, 5, 10);
@@ -116,7 +158,6 @@ public class Ventana extends JFrame {
         jpSal = new JPanel();
         jpSal.setLayout(new GridBagLayout());
         jpSal.setBorder(new TitledBorder("Salida"));
-        
         establecerGBC(0, 1, 2, 1, 1.0, 0.25);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(5, 10, 10, 10);
@@ -136,7 +177,7 @@ public class Ventana extends JFrame {
     }
 
     //////////////// METODOS
-    // METODOS MENU
+    // METODOS BOTONES MENU
     private void accionBotonAbrir(ActionEvent evt) {
 
     }
@@ -153,4 +194,12 @@ public class Ventana extends JFrame {
 
     }
 
+    // METODOS BOTONES Entrada
+    private void accionBotonAnalizar(ActionEvent evt) {
+        
+    }
+    
+    private void accionBotonGenerarAutomata(ActionEvent evt) {
+        
+    }
 }
