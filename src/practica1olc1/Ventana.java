@@ -22,7 +22,6 @@ public class Ventana extends JFrame {
     private JMenuItem jmiGuaCom;
     private JMenuItem jmiGenXML;
     
-    int a = 0;
 
     //////////////// CONTRUCTOR
     public Ventana() {
