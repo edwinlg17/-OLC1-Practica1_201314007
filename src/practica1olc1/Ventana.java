@@ -2,6 +2,7 @@ package practica1olc1;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
@@ -9,6 +10,8 @@ import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
 
 public class Ventana extends JFrame {
 
@@ -21,7 +24,10 @@ public class Ventana extends JFrame {
     private JMenuItem jmiGua;
     private JMenuItem jmiGuaCom;
     private JMenuItem jmiGenXML;
-    
+
+    private JPanel jpEnt;
+    private JPanel jpVis;
+    private JPanel jpSal;
 
     //////////////// CONTRUCTOR
     public Ventana() {
@@ -64,7 +70,7 @@ public class Ventana extends JFrame {
             }
         });
         jmArc.add(jmiGua);
-        
+
         jmiGuaCom = new JMenuItem("Guardar Como");
         jmiGuaCom.addActionListener(new ActionListener() {
             @Override
@@ -73,7 +79,7 @@ public class Ventana extends JFrame {
             }
         });
         jmArc.add(jmiGuaCom);
-        
+
         jmiGenXML = new JMenuItem("Generar XML");
         jmiGenXML.addActionListener(new ActionListener() {
             @Override
@@ -82,9 +88,40 @@ public class Ventana extends JFrame {
             }
         });
         jmArc.add(jmiGenXML);
-        
+
         jmbBar.add(jmArc);
         this.setJMenuBar(jmbBar);
+
+        //////////////////////////// Panel Entrada
+        jpEnt = new JPanel();
+        jpEnt.setLayout(new GridBagLayout());
+        jpEnt.setBorder(new TitledBorder("Entrada"));
+        
+        establecerGBC(0, 0, 1, 1, 1.0, 1.0);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10, 10, 5, 5);
+        this.add(jpEnt, gbc);
+        
+        //////////////////////////// Panel Visualizacion
+        jpVis = new JPanel();
+        jpVis.setLayout(new GridBagLayout());
+        jpVis.setBorder(new TitledBorder("Grafico"));
+        
+        establecerGBC(1, 0, 1, 1, 1.0, 1.0);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10, 5, 5, 10);
+        this.add(jpVis, gbc);
+        
+        //////////////////////////// Panel Salida
+        jpSal = new JPanel();
+        jpSal.setLayout(new GridBagLayout());
+        jpSal.setBorder(new TitledBorder("Salida"));
+        
+        establecerGBC(0, 1, 2, 1, 1.0, 0.25);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(5, 10, 10, 10);
+        this.add(jpSal, gbc);
+        
     }
 
     // Funcion que establece los parametros para el grid bag constraints
@@ -101,16 +138,19 @@ public class Ventana extends JFrame {
     //////////////// METODOS
     // METODOS MENU
     private void accionBotonAbrir(ActionEvent evt) {
-        
+
     }
+
     private void accionBotonGuardar(ActionEvent evt) {
-        
+
     }
+
     private void accionBotonGuardarComo(ActionEvent evt) {
-        
+
     }
+
     private void accionBotonGenerarXML(ActionEvent evt) {
-        
+
     }
-    
+
 }
