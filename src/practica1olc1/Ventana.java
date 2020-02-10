@@ -25,6 +25,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 public class Ventana extends JFrame {
 
@@ -176,11 +177,11 @@ public class Ventana extends JFrame {
 
         // Panel Imagen
         JLabel jl = new JLabel();
-
+        
         jl.setIcon(new ImageIcon("src\\Imagenes\\default.jpg"));
 
-        jspImg = new JScrollPane(jl);
         
+        jspImg = new JScrollPane(jl);
         jspImg.setViewportView(jl);
         establecerGBC(1, 0, 1, 1, 1.0, 1.0);
         gbc.fill = GridBagConstraints.BOTH;
@@ -258,8 +259,26 @@ public class Ventana extends JFrame {
 
     // METODOS JARBOL
     private void accionArbol(TreeSelectionEvent e) {
-        System.out.println(e.getPath());
-        System.out.println(e.getNewLeadSelectionPath());
+        TreePath tp = e.getPath();
+        Object[] lis = tp.getPath();
+        String rut = "";
+        
+        for (int i = 0; i < lis.length; i++) {
+            rut += lis[i].toString() + "\\";
+        }
+        
+        File f = new File(System.getProperty("user.home") + "\\Desktop\\" + rut);
+        
+        if (f.exists()) {
+            JLabel jl = new JLabel();
+            jl.setIcon(new ImageIcon(f.getPath()));
+
+            jspImg.setViewportView(jl);
+            jspImg.updateUI();
+        }else{
+            DefaultTreeModel dtm = new DefaultTreeModel(crearArbol());
+            jtArb.setModel(dtm);
+        }
 
     }
 
@@ -308,7 +327,7 @@ public class Ventana extends JFrame {
         File[] fArc = fRai.listFiles();
 
         for (int i = 0; i < fArc.length; i++) {
-            if (fArc[i].getName().endsWith(".jpg")) {
+            if (fArc[i].getName().endsWith(".jpg") || fArc[i].getName().endsWith(".png")) {
                 dmtnArb.add(new DefaultMutableTreeNode(fArc[i].getName()));
             }
         }
@@ -317,7 +336,7 @@ public class Ventana extends JFrame {
         fArc = fRai.listFiles();
 
         for (int i = 0; i < fArc.length; i++) {
-            if (fArc[i].getName().endsWith(".jpg")) {
+            if (fArc[i].getName().endsWith(".jpg") || fArc[i].getName().endsWith(".png")) {
                 dmtnSig.add(new DefaultMutableTreeNode(fArc[i].getName()));
             }
         }
@@ -326,7 +345,7 @@ public class Ventana extends JFrame {
         fArc = fRai.listFiles();
 
         for (int i = 0; i < fArc.length; i++) {
-            if (fArc[i].getName().endsWith(".jpg")) {
+            if (fArc[i].getName().endsWith(".jpg") || fArc[i].getName().endsWith(".png")) {
                 dmtnTra.add(new DefaultMutableTreeNode(fArc[i].getName()));
             }
         }
@@ -335,7 +354,7 @@ public class Ventana extends JFrame {
         fArc = fRai.listFiles();
 
         for (int i = 0; i < fArc.length; i++) {
-            if (fArc[i].getName().endsWith(".jpg")) {
+            if (fArc[i].getName().endsWith(".jpg") || fArc[i].getName().endsWith(".png")) {
                 dmtnAut.add(new DefaultMutableTreeNode(fArc[i].getName()));
             }
         }
