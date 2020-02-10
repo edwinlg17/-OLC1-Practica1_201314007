@@ -2,20 +2,29 @@ package practica1olc1;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Action;
-import javax.swing.JButton;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTree;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 public class Ventana extends JFrame {
 
@@ -23,29 +32,27 @@ public class Ventana extends JFrame {
     private GridBagConstraints gbc;
 
     private JMenuBar jmbBar;
-    private JMenu jmArc;
-    private JMenuItem jmiAbr;
-    private JMenuItem jmiGua;
-    private JMenuItem jmiGuaCom;
-    private JMenuItem jmiGenXML;
+    private JMenu jmArc, jmAna;
+    private JMenuItem jmiAbr, jmiGua, jmiGuaCom, jmiGenXML;
+    private JMenuItem jmiAna, jmiGenAut;
 
-    private JPanel jpEnt;
-    private JPanel jpVis;
-    private JPanel jpSal;
-    
-    private JButton jbAna;
-    private JButton jbGenAut;
+    private JPanel jpEnt, jpVis, jpSal;
+
     private JTextArea jtaEnt;
     private JScrollPane jspEnt;
-    
+
+    private JScrollPane jspImg, jspArb;
+    private JTree jtArb;
+
     private JTextArea jtaSal;
-    
+    private JScrollPane jspSal;
+
     //////////////// CONTRUCTOR
     public Ventana() {
         formatoFormulario();
         formatoComponentes();
         this.pack();
-        this.setSize(800, 600);
+        this.setSize(900, 620);
         this.setLocationRelativeTo(null);
     }
 
@@ -62,6 +69,7 @@ public class Ventana extends JFrame {
         //////////////////////////// MENU
         jmbBar = new JMenuBar();
 
+        // Menu Archivo
         jmArc = new JMenu("Archivo");
 
         jmiAbr = new JMenuItem("Abrir");
@@ -100,69 +108,112 @@ public class Ventana extends JFrame {
         });
         jmArc.add(jmiGenXML);
 
-        jmbBar.add(jmArc);
-        this.setJMenuBar(jmbBar);
+        // Menu Analisis
+        jmAna = new JMenu("Analisis");
 
-        //////////////////////////// Panel Entrada
-        jpEnt = new JPanel();
-        jpEnt.setLayout(new GridBagLayout());
-        jpEnt.setBorder(new TitledBorder("Entrada"));
-        
-        jtaEnt = new JTextArea();
-        jspEnt = new JScrollPane(jtaEnt);
-        establecerGBC(0, 0, 2, 1, 1.0, 1.0);
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(10, 10, 10, 10);
-        jpEnt.add(jspEnt, gbc);
-        
-        jbAna = new JButton("Analizar");
-        jbAna.addActionListener(new ActionListener() {
+        jmiAna = new JMenuItem("Analizar");
+        jmiAna.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 accionBotonAnalizar(e);
             }
         });
-        establecerGBC(0, 1, 1, 1, 1.0, 0.03);
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(10, 10, 10, 10);
-        jpEnt.add(jbAna, gbc);
-        
-        jbGenAut = new JButton("Generar Automata");
-        jbGenAut.addActionListener(new ActionListener() {
+        jmAna.add(jmiAna);
+
+        jmiGenAut = new JMenuItem("Generar Automata");
+        jmiGenAut.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 accionBotonGenerarAutomata(e);
             }
         });
-        establecerGBC(1, 1, 1, 1, 1.0, 0.03);
+        jmAna.add(jmiGenAut);
+
+        jmbBar.add(jmArc);
+        jmbBar.add(jmAna);
+        this.setJMenuBar(jmbBar);
+
+        //////////////////////////// Panel Entrada
+        // panel entrada
+        jpEnt = new JPanel();
+        jpEnt.setLayout(new GridBagLayout());
+        jpEnt.setBorder(new TitledBorder("Entrada"));
+
+        // text area entrada
+        jtaEnt = new JTextArea();
+        jspEnt = new JScrollPane(jtaEnt);
+        establecerGBC(0, 0, 2, 1, 0.7, 1.0);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(10, 10, 10, 10);
-        jpEnt.add(jbGenAut, gbc);
-        
-        
-        establecerGBC(0, 0, 1, 1, 0.75, 1.0);
+        jpEnt.add(jspEnt, gbc);
+
+        // inserto panel entrada
+        establecerGBC(0, 0, 1, 1, 0.5, 1.0);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(10, 10, 5, 5);
         this.add(jpEnt, gbc);
-        
+
         //////////////////////////// Panel Visualizacion
+        // panel Visualizacion
         jpVis = new JPanel();
         jpVis.setLayout(new GridBagLayout());
         jpVis.setBorder(new TitledBorder("Grafico"));
+
+        // Arbol de directorios
+        jtArb = new JTree(crearArbol());
+        jtArb.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
+            @Override
+            public void valueChanged(TreeSelectionEvent e) {
+                accionArbol(e);
+            }
+        });
+
+        jspArb = new JScrollPane(jtArb);
+        establecerGBC(0, 0, 1, 1, 0.25, 1.0);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10, 10, 10, 5);
+        jpVis.add(jspArb, gbc);
+
+        // Panel Imagen
+        JLabel jl = new JLabel();
+
+        jl.setIcon(new ImageIcon("src\\Imagenes\\default.jpg"));
+
+        jspImg = new JScrollPane(jl);
+        
+        jspImg.setViewportView(jl);
+        establecerGBC(1, 0, 1, 1, 1.0, 1.0);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10, 5, 10, 10);
+        jpVis.add(jspImg, gbc);
+
+        // inserto panel Visualizacion
         establecerGBC(1, 0, 1, 1, 1.0, 1.0);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(10, 5, 5, 10);
         this.add(jpVis, gbc);
-        
+
         //////////////////////////// Panel Salida
+        // panel salida
         jpSal = new JPanel();
         jpSal.setLayout(new GridBagLayout());
         jpSal.setBorder(new TitledBorder("Salida"));
-        establecerGBC(0, 1, 2, 1, 1.0, 0.25);
+
+        // text area salida
+        jtaSal = new JTextArea();
+//        jtaSal.setEnabled(false);
+        jspSal = new JScrollPane(jtaSal);
+        establecerGBC(0, 0, 1, 1, 1.0, 1.0);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        jpSal.add(jspSal, gbc);
+
+        // inserto panel salida
+        establecerGBC(0, 1, 2, 1, 1.0, 0.2);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(5, 10, 10, 10);
         this.add(jpSal, gbc);
-        
+
     }
 
     // Funcion que establece los parametros para el grid bag constraints
@@ -196,10 +247,98 @@ public class Ventana extends JFrame {
 
     // METODOS BOTONES Entrada
     private void accionBotonAnalizar(ActionEvent evt) {
-        
+        System.out.println("ancho:" + this.getWidth() + " - alto:" + this.getHeight());
     }
-    
+
     private void accionBotonGenerarAutomata(ActionEvent evt) {
-        
+
+        DefaultTreeModel dtm = new DefaultTreeModel(crearArbol());
+        jtArb.setModel(dtm);
+    }
+
+    // METODOS JARBOL
+    private void accionArbol(TreeSelectionEvent e) {
+        System.out.println(e.getPath());
+        System.out.println(e.getNewLeadSelectionPath());
+
+    }
+
+    // Otros
+    //metodo que verifica los directorios
+    private void verDirectorios() {
+        File dd1 = new File(System.getProperty("user.home") + "/desktop/Diagramas");
+        File da2 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Arboles");
+        File ds3 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Siguientes");
+        File dt4 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Transiciones");
+        File da5 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Automatas");
+
+        if (!dd1.exists()) {
+            dd1.mkdir();
+        }
+        if (!da2.exists()) {
+            da2.mkdir();
+        }
+        if (!ds3.exists()) {
+            ds3.mkdir();
+        }
+        if (!dt4.exists()) {
+            dt4.mkdir();
+        }
+        if (!da5.exists()) {
+            da5.mkdir();
+        }
+    }
+
+    //metodo que crea el arbol de archivos
+    private DefaultMutableTreeNode crearArbol() {
+        verDirectorios();
+
+        DefaultMutableTreeNode dmtnDia = new DefaultMutableTreeNode("Diagramas");
+        DefaultMutableTreeNode dmtnArb = new DefaultMutableTreeNode("Arboles");
+        DefaultMutableTreeNode dmtnSig = new DefaultMutableTreeNode("Siguientes");
+        DefaultMutableTreeNode dmtnTra = new DefaultMutableTreeNode("Transiciones");
+        DefaultMutableTreeNode dmtnAut = new DefaultMutableTreeNode("Automatas");
+
+        dmtnDia.add(dmtnArb);
+        dmtnDia.add(dmtnSig);
+        dmtnDia.add(dmtnTra);
+        dmtnDia.add(dmtnAut);
+
+        File fRai = new File(System.getProperty("user.home") + "/desktop/Diagramas/Arboles");
+        File[] fArc = fRai.listFiles();
+
+        for (int i = 0; i < fArc.length; i++) {
+            if (fArc[i].getName().endsWith(".jpg")) {
+                dmtnArb.add(new DefaultMutableTreeNode(fArc[i].getName()));
+            }
+        }
+
+        fRai = new File(System.getProperty("user.home") + "/desktop/Diagramas/Siguientes");
+        fArc = fRai.listFiles();
+
+        for (int i = 0; i < fArc.length; i++) {
+            if (fArc[i].getName().endsWith(".jpg")) {
+                dmtnSig.add(new DefaultMutableTreeNode(fArc[i].getName()));
+            }
+        }
+
+        fRai = new File(System.getProperty("user.home") + "/desktop/Diagramas/Transiciones");
+        fArc = fRai.listFiles();
+
+        for (int i = 0; i < fArc.length; i++) {
+            if (fArc[i].getName().endsWith(".jpg")) {
+                dmtnTra.add(new DefaultMutableTreeNode(fArc[i].getName()));
+            }
+        }
+
+        fRai = new File(System.getProperty("user.home") + "/desktop/Diagramas/Automatas");
+        fArc = fRai.listFiles();
+
+        for (int i = 0; i < fArc.length; i++) {
+            if (fArc[i].getName().endsWith(".jpg")) {
+                dmtnAut.add(new DefaultMutableTreeNode(fArc[i].getName()));
+            }
+        }
+        return dmtnDia;
     }
 }
