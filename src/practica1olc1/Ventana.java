@@ -1,5 +1,8 @@
 package practica1olc1;
 
+import com.sun.prism.image.ViewPort;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -7,22 +10,30 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
+import javax.swing.JViewport;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -30,6 +41,10 @@ import javax.swing.tree.TreePath;
 public class Ventana extends JFrame {
 
     //////////////// ATRIBUTOS
+    // Variables
+    private String rutAbr;
+
+    // Componentes 
     private GridBagConstraints gbc;
 
     private JMenuBar jmbBar;
@@ -67,6 +82,9 @@ public class Ventana extends JFrame {
 
     // Formato de los Componentes
     private void formatoComponentes() {
+        // variables
+        rutAbr = "";
+
         //////////////////////////// MENU
         jmbBar = new JMenuBar();
 
@@ -177,12 +195,16 @@ public class Ventana extends JFrame {
 
         // Panel Imagen
         JLabel jl = new JLabel();
-        
-        jl.setIcon(new ImageIcon("src\\Imagenes\\default.jpg"));
 
-        
+        ImageIcon fot = new ImageIcon("src\\Imagenes\\default.jpg");
+        double w = fot.getIconHeight() * 0.95;
+        double h = fot.getIconWidth() * 0.95;
+        Icon icono = new ImageIcon(fot.getImage().getScaledInstance((int) h, (int) w, Image.SCALE_DEFAULT));
+        jl.setIcon(icono);
+
         jspImg = new JScrollPane(jl);
         jspImg.setViewportView(jl);
+
         establecerGBC(1, 0, 1, 1, 1.0, 1.0);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(10, 5, 10, 10);
@@ -231,15 +253,26 @@ public class Ventana extends JFrame {
     //////////////// METODOS
     // METODOS BOTONES MENU
     private void accionBotonAbrir(ActionEvent evt) {
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new FileNameExtensionFilter("Archivo", "txt", "txt"));
 
+        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            String tex = leeArchivo(fc.getSelectedFile());
+            jtaEnt.setText(tex);
+            rutAbr = fc.getSelectedFile().getPath();
+        }
     }
 
     private void accionBotonGuardar(ActionEvent evt) {
-
+        if (rutAbr.equals("")) {
+            guardarArchivoComo();
+        }else{
+            guardarArchivo();
+        }
     }
 
     private void accionBotonGuardarComo(ActionEvent evt) {
-
+        guardarArchivoComo();
     }
 
     private void accionBotonGenerarXML(ActionEvent evt) {
@@ -262,20 +295,26 @@ public class Ventana extends JFrame {
         TreePath tp = e.getPath();
         Object[] lis = tp.getPath();
         String rut = "";
-        
+
         for (int i = 0; i < lis.length; i++) {
             rut += lis[i].toString() + "\\";
         }
-        
+
         File f = new File(System.getProperty("user.home") + "\\Desktop\\" + rut);
-        
-        if (f.exists()) {
+
+        if (f.exists() && (f.getPath().endsWith(".jpg") || f.getPath().endsWith(".png"))) {
             JLabel jl = new JLabel();
-            jl.setIcon(new ImageIcon(f.getPath()));
+
+            ImageIcon fot = new ImageIcon(f.getPath());
+            double w = fot.getIconHeight() * 0.25;
+            double h = fot.getIconWidth() * 0.25;
+            Icon icono = new ImageIcon(fot.getImage().getScaledInstance((int) h, (int) w, Image.SCALE_DEFAULT));
+            jl.setIcon(icono);
 
             jspImg.setViewportView(jl);
             jspImg.updateUI();
-        }else{
+
+        } else {
             DefaultTreeModel dtm = new DefaultTreeModel(crearArbol());
             jtArb.setModel(dtm);
         }
@@ -359,5 +398,51 @@ public class Ventana extends JFrame {
             }
         }
         return dmtnDia;
+    }
+
+    // metodo para leer archivos
+    private String leeArchivo(File arc) {
+        String tex = "";
+        try {
+            FileReader fr = new FileReader(arc);
+            BufferedReader br = new BufferedReader(fr);
+
+            while (br.ready()) {
+                tex += br.readLine() + "\n";
+            }
+
+            br.close();
+            fr.close();
+        } catch (Exception e) {
+        }
+        tex = tex.toLowerCase();
+        return tex;
+    }
+    
+    // metodo para guardar archivos
+    private void guardarArchivo() {
+        try {
+            File f = new File(rutAbr);
+            BufferedWriter bw;
+            bw = new BufferedWriter(new FileWriter(f));
+            bw.write(jtaEnt.getText());
+            bw.close();
+        } catch (Exception e) {
+        }
+    }
+    
+    // metodo para guardar archivos como
+    private void guardarArchivoComo(){
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new FileNameExtensionFilter("Archivo", "txt", "txt"));
+
+        if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            rutAbr = fc.getSelectedFile().getPath();
+
+            if (!rutAbr.endsWith(".txt")) {
+                rutAbr += ".txt";
+            }
+            guardarArchivo();
+        }
     }
 }
