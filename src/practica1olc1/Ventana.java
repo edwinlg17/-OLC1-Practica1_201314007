@@ -281,7 +281,9 @@ public class Ventana extends JFrame {
 
     // METODOS BOTONES Entrada
     private void accionBotonAnalizar(ActionEvent evt) {
-        System.out.println("ancho:" + this.getWidth() + " - alto:" + this.getHeight());
+        //System.out.println("ancho:" + this.getWidth() + " - alto:" + this.getHeight());
+        AnalizadorLexico a = new AnalizadorLexico();
+        a.analizar(jtaEnt.getText());
     }
 
     private void accionBotonGenerarAutomata(ActionEvent evt) {

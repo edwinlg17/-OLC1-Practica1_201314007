@@ -1,52 +1,96 @@
 package practica1olc1;
 
+import java.util.LinkedList;
+
 public class AnalizadorLexico {
+
     //////////////// ATRIBUTOS
-    private String lex;
-    private String tok;
-    private int fil;
-    private int col;
-    
+    LinkedList<Token> lisTok;
+
     //////////////// CONSTRUCTOR
-    public AnalizadorLexico(){
-        this.lex = "";
-        this.tok = "";
-        this.fil = 0;
-        this.col = 0;
-    }
-    
-    public AnalizadorLexico(String lex, String tok, int fil, int col){
-        this.lex = lex;
-        this.tok = tok;
-        this.fil = fil;
-        this.col = col;
-    }
-    
-    //////////////// METODOS
-    public String obtLex() {
-        return lex;
-    }
-    public String obtTok() {
-        return tok;
-    }
-    public int obtFil() {
-        return fil;
-    }
-    public int obtCol() {
-        return col;
+    public AnalizadorLexico() {
+        lisTok = new LinkedList<>();
+
     }
 
-    public void estLex(String lex) {
-        this.lex = lex;
+    //////////////// METODOS
+    //public LinkedList analizar(String tex) {
+    public void analizar(String tex) {
+        System.out.println("/////////// Inicio Analisis");
+        lisTok = new LinkedList<>();
+        int ite = 0, est = 0, fil = 0, col = 0;
+        String lex = "";
+        
+        
+       
+//        while (ite < tex.length()) {
+//            char car = tex.charAt(ite);
+//            
+//            switch (est) {
+//                // estado 0
+//                case 0:
+//                    if (verLetra(car)) {
+//                        lex += car;
+//                        est = 1;
+//                        ite++;
+//                    } else {
+//                        ite++;
+//                    }
+//                    break;
+//                // estado 1
+//                case 1:
+//                    if (verLetra(car) | verNumero(car) | car == '_') {
+//                        lex += car;
+//                        est = 1;
+//                        ite++;
+//                    }else{
+//                        System.out.println(lex);
+//                        lex = "";
+//                        est = 0;
+//                    }
+//                    break;
+//                // estado 2
+//                case 2:
+//
+//                    break;
+//                // estado 3
+//                case 3:
+//
+//                    break;
+//                // estado 4
+//                case 4:
+//
+//                    break;
+//                // ERROR 5
+//                case 5:
+//
+//                    break;
+//            }
+//        }
+        
+        System.out.println("/////////// Fin Analisis");
+        //return lisTok;
     }
-    public void estTok(String tok) {
-        this.tok = tok;
+
+    private boolean verLetra(char car) {
+        boolean ver = false;
+        if (car >= 'a' & car <= 'z') {
+            ver = true;
+        }
+        if (car >= 'A' & car <= 'Z') {
+            ver = true;
+        }
+        if (car == 'ñ' | car == 'Ñ') {
+            ver = true;
+        }
+        return ver;
     }
-    public void estFil(int fil) {
-        this.fil = fil;
+
+    private boolean verNumero(char car) {
+        boolean ver = false;
+        if (car >= '0' & car <= '9') {
+            ver = true;
+        }
+        return ver;
     }
-    public void estCol(int col) {
-        this.col = col;
-    }
-    
 }
