@@ -15,6 +15,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.LinkedList;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -277,13 +278,23 @@ public class Ventana extends JFrame {
 
     private void accionBotonGenerarXML(ActionEvent evt) {
         System.out.println(this.getWidth() + " - " + this.getHeight());
+
     }
 
     // METODOS BOTONES Entrada
     private void accionBotonAnalizar(ActionEvent evt) {
-        //System.out.println("ancho:" + this.getWidth() + " - alto:" + this.getHeight());
         AnalizadorLexico a = new AnalizadorLexico();
         a.analizar(jtaEnt.getText());
+
+        LinkedList<Token> lisTok = a.obtenerTokens();
+        
+        System.out.println("/////////// Inicio Analisis");
+
+        for (Token l : lisTok) {
+            System.out.println("tk: " + l.obtTok() + " lex: " + l.obtLex() + " fil: " + l.obtFil() + " col: " + l.obtCol());
+        }
+
+        System.out.println("/////////// Fin Analisis");
     }
 
     private void accionBotonGenerarAutomata(ActionEvent evt) {

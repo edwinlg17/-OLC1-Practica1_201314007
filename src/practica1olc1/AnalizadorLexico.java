@@ -5,19 +5,22 @@ import java.util.LinkedList;
 public class AnalizadorLexico {
 
     //////////////// ATRIBUTOS
-    LinkedList<Token> lisTok;
+    private LinkedList<Token> lisTok;
+    private LinkedList<Token> lisErr;
 
     //////////////// CONSTRUCTOR
     public AnalizadorLexico() {
         lisTok = new LinkedList<>();
-
+        lisErr = new LinkedList<>();
     }
 
     //////////////// METODOS
-    //public LinkedList analizar(String tex) {
+    
+    // Metodo analizar
     public void analizar(String tex) {
-        System.out.println("/////////// Inicio Analisis");
         lisTok = new LinkedList<>();
+        lisErr = new LinkedList<>();
+        
         int ite = 0, est = 0, fil = 1, col = 1;
         String lex = "";
 
@@ -25,11 +28,13 @@ public class AnalizadorLexico {
 
         // caracter de finalizacion
         tex += "  ";
+        tex = tex.toLowerCase();
+
         while (ite < tex.length()) {
             char car = tex.charAt(ite);
 
             switch (est) {
-                // estado 0
+                ////////////////////////////////// estado 0
                 case 0:
                     // ID
                     if (verLetra(car)) {
@@ -70,10 +75,8 @@ public class AnalizadorLexico {
                     else if (verSimbolo(car)) {
                         est = 0;
                         lex += car;
-                        cl = col;
-                        fl = fil;
+                        lisTok.add(new Token(verTkSim(lex), lex, fil, col));
                         col++;
-                        //System.out.println("SIMBOLO: " + lex + " - " + fl + " - " + cl);
                         lex = "";
                     } // Caracteres Omitibles
                     else if (car == '\r' | car == '\t') {
@@ -89,95 +92,99 @@ public class AnalizadorLexico {
                         lex += car;
                         cl = col;
                         fl = fil;
-                        System.out.println("ERROR LEXICO: " + car + " - " + fl + " - " + cl);
+                        lisErr.add(new Token("Caracter Desconocido", lex, fl, cl));
+                        //System.out.println("ERROR LEXICO: " + car + " - " + fl + " - " + cl);
                         lex = "";
                         col++;
                     }
                     ite++;
                     break;
-                // estado 1
+                ////////////////////////////////// estado 1
                 case 1:
                     if (verLetra(car) | verNumero(car) | car == '_') {
-                        lex += car;
                         est = 1;
+                        lex += car;
                         ite++;
                         col++;
                     } else {
+                        est = 0;
+                        lisTok.add(new Token(verTkPalRes(lex), lex, fl, cl));
                         //System.out.println("ID:" + lex + " - " + fl + " - " + cl);
                         lex = "";
-                        est = 0;
                     }
                     break;
-                // estado 2
+                ////////////////////////////////// estado 2
                 case 2:
                     if (verNumero(car)) {
-                        lex += car;
                         est = 2;
+                        lex += car;
                         ite++;
                         col++;
                     } else {
+                        est = 0;
+                        lisTok.add(new Token("tk_numero", lex, fl, cl));
                         //System.out.println("NUMERO:" + lex + " - " + fl + " - " + cl);
                         lex = "";
-                        est = 0;
                     }
                     break;
-                // estado 3
+                ////////////////////////////////// estado 3
                 case 3:
                     if (car != '"') {
-                        lex += car;
                         est = 3;
+                        lex += car;
                         ite++;
                         col++;
                     } else {
+                        est = 0;
                         lex += car;
                         ite++;
                         col++;
+                        lisTok.add(new Token("tk_texto", lex, fl, cl));
                         //System.out.println("TEXTO:" + lex + " - " + fl + " - " + cl);
                         lex = "";
-                        est = 0;
                     }
                     break;
-                // estado 4
+                ////////////////////////////////// estado 4
                 case 4:
                     if (car == '/') {
-                        lex += car;
                         est = 7;
+                        lex += car;
                         ite++;
                         col++;
                     } else {
+                        est = 0;
                         lex += car;
                         ite++;
                         col++;
                         //System.out.println("ERROR SINTACTICO:" + lex + " - " + fl + " - " + cl);
                         lex = "";
-                        est = 0;
                     }
                     break;
-                // estado 5
+                ////////////////////////////////// estado 5
                 case 5:
                     if (car == '!') {
-                        lex += car;
                         est = 8;
+                        lex += car;
                         ite++;
                         col++;
                     } else {
+                        est = 0;
                         lex += car;
                         ite++;
                         col++;
                         //System.out.println("ERROR SINTACTICO:" + lex + " - " + fl + " - " + cl);
                         lex = "";
-                        est = 0;
                     }
                     break;
-                // estado 6
+                ////////////////////////////////// estado 6
                 case 6:
                     // estado de finalizacion
                     break;
-                // estado 7
+                ////////////////////////////////// estado 7
                 case 7:
                     if (car != '\n') {
-                        lex += car;
                         est = 7;
+                        lex += car;
                         ite++;
                         col++;
                     } else {
@@ -190,54 +197,60 @@ public class AnalizadorLexico {
                         col = 1;
                     }
                     break;
-                // estado 8
+                ////////////////////////////////// estado 8
                 case 8:
                     if (car != '!') {
-                        if(car == '\n'){
+                        est = 8;
+                        if (car == '\n') {
                             fil++;
+                            col = 0;
                         }
                         lex += car;
-                        est = 8;
+
                         ite++;
                         col++;
                     } else {
-                        lex += car;
                         est = 9;
+                        lex += car;
                         ite++;
                         col++;
                     }
                     break;
-                // estado 9
+                ////////////////////////////////// estado 9
                 case 9:
                     if (car == '>') {
-                        lex += car;
                         est = 8;
+                        lex += car;
                         ite++;
                         col++;
-                        System.out.println("COMENTARIO MULTILINEA:" + lex + " - " + fl + " - " + cl);
+                        //System.out.println("COMENTARIO MULTILINEA:" + lex + " - " + fl + " - " + cl);
                         lex = "";
                         est = 0;
                     } else {
+                        est = 0;
                         lex += car;
-                        est = 9;
                         ite++;
                         col++;
                         //System.out.println("ERROR SINTACTICO:" + lex + " - " + fl + " - " + cl);
                         lex = "";
-                        est = 0;
                     }
-                    break;
-                // estado ERROR
-                case 10:
-
                     break;
             }
         }
-
-        System.out.println("/////////// Fin Analisis");
-        //return lisTok;
+        
     }
 
+    // Metodo para obtener tokens
+    public LinkedList<Token> obtenerTokens(){
+        return lisTok;
+    }
+    
+    // Metodo para obtener errores
+    public LinkedList<Token> obtenerErrores(){
+        return lisErr;
+    }
+    
+    // Metodos de verificacion de caracteres
     private boolean verLetra(char car) {
         boolean ver = false;
         if (car >= 'a' & car <= 'z') {
@@ -279,7 +292,77 @@ public class AnalizadorLexico {
             ver = true;
         }
 
+        if (car == '~') {
+            ver = true;
+        }
+
         return ver;
     }
 
+    // Metodos de verificacion de lexemas
+    private String verTkPalRes(String lex) {
+        String tok = "tk_id";
+
+        switch (lex) {
+            case "conj":
+                tok = "tk_con";
+                break;
+        }
+
+        return tok;
+    }
+
+    private String verTkSim(String lex) {
+        String tok = "tk_sim";
+
+        switch (lex) {
+            case "{":
+                tok = "tk_llaAbr";
+                break;
+            case "}":
+                tok = "tk_llaCie";
+                break;
+            case "-":
+                tok = "tk_gui";
+                break;
+            case "<":
+                tok = "tk_men";
+                break;
+            case ">":
+                tok = "tk_may";
+                break;
+            case ";":
+                tok = "tk_punCom";
+                break;
+            case "%":
+                tok = "tk_por";
+                break;
+            case ":":
+                tok = "tk_dosPun";
+                break;
+            case ".":
+                tok = "tk_pun";
+                break;
+            case "|":
+                tok = "tk_barVer";
+                break;
+            case "?":
+                tok = "tk_cieInt";
+                break;
+            case "*":
+                tok = "tk_ast";
+                break;
+            case "+":
+                tok = "tk_mas";
+                break;
+            case ",":
+                tok = "tk_com";
+                break;
+            case "~":
+                tok = "tk_til";
+                break;
+        }
+
+        return tok;
+    }
 }

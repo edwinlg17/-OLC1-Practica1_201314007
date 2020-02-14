@@ -15,7 +15,7 @@ public class Token {
         this.col = 0;
     }
     
-    public Token(String lex, String tok, int fil, int col){
+    public Token(String tok, String lex, int fil, int col){
         this.lex = lex;
         this.tok = tok;
         this.fil = fil;
