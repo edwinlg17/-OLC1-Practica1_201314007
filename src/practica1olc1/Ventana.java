@@ -68,7 +68,7 @@ public class Ventana extends JFrame {
         formatoFormulario();
         formatoComponentes();
         this.pack();
-        this.setSize(900, 620);
+        this.setSize(1000, 600);
         this.setLocationRelativeTo(null);
     }
 
@@ -188,7 +188,7 @@ public class Ventana extends JFrame {
         });
 
         jspArb = new JScrollPane(jtArb);
-        establecerGBC(0, 0, 1, 1, 0.25, 1.0);
+        establecerGBC(0, 0, 1, 1, 0.3, 1.0);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(10, 10, 10, 5);
         jpVis.add(jspArb, gbc);
@@ -211,7 +211,7 @@ public class Ventana extends JFrame {
         jpVis.add(jspImg, gbc);
 
         // inserto panel Visualizacion
-        establecerGBC(1, 0, 1, 1, 1.0, 1.0);
+        establecerGBC(1, 0, 1, 1, 0.5, 1.0);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(10, 5, 5, 10);
         this.add(jpVis, gbc);
@@ -254,7 +254,7 @@ public class Ventana extends JFrame {
     // METODOS BOTONES MENU
     private void accionBotonAbrir(ActionEvent evt) {
         JFileChooser fc = new JFileChooser();
-        fc.setFileFilter(new FileNameExtensionFilter("Archivo", "txt", "txt"));
+        fc.setFileFilter(new FileNameExtensionFilter("Archivo", "er", "er"));
 
         if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             String tex = leeArchivo(fc.getSelectedFile());
@@ -266,7 +266,7 @@ public class Ventana extends JFrame {
     private void accionBotonGuardar(ActionEvent evt) {
         if (rutAbr.equals("")) {
             guardarArchivoComo();
-        }else{
+        } else {
             guardarArchivo();
         }
     }
@@ -276,7 +276,7 @@ public class Ventana extends JFrame {
     }
 
     private void accionBotonGenerarXML(ActionEvent evt) {
-
+        System.out.println(this.getWidth() + " - " + this.getHeight());
     }
 
     // METODOS BOTONES Entrada
@@ -324,7 +324,7 @@ public class Ventana extends JFrame {
     }
 
     // Otros
-    //metodo que verifica los directorios
+    //metodo que verifica los directorios~
     private void verDirectorios() {
         File dd1 = new File(System.getProperty("user.home") + "/desktop/Diagramas");
         File da2 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Arboles");
@@ -420,7 +420,7 @@ public class Ventana extends JFrame {
         tex = tex.toLowerCase();
         return tex;
     }
-    
+
     // metodo para guardar archivos
     private void guardarArchivo() {
         try {
@@ -432,17 +432,17 @@ public class Ventana extends JFrame {
         } catch (Exception e) {
         }
     }
-    
+
     // metodo para guardar archivos como
-    private void guardarArchivoComo(){
+    private void guardarArchivoComo() {
         JFileChooser fc = new JFileChooser();
-        fc.setFileFilter(new FileNameExtensionFilter("Archivo", "txt", "txt"));
+        fc.setFileFilter(new FileNameExtensionFilter("Archivo", "er", "er"));
 
         if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             rutAbr = fc.getSelectedFile().getPath();
 
-            if (!rutAbr.endsWith(".txt")) {
-                rutAbr += ".txt";
+            if (!rutAbr.endsWith(".er")) {
+                rutAbr += ".er";
             }
             guardarArchivo();
         }
