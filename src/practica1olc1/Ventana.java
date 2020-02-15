@@ -281,8 +281,15 @@ public class Ventana extends JFrame {
     }
 
     private void accionBotonGenerarXML(ActionEvent evt) {
+        AnalizadorSintactico as = new AnalizadorSintactico();
         
+        LinkedList<Token> lt = new LinkedList<>();
+        lt.add(new Token("H", "H", 0, 0));
+        lt.add(new Token("O", "O", 0, 0));
+        lt.add(new Token("L", "L", 0, 0));
+        lt.add(new Token("A", "A", 0, 0));
         
+        as.analizar(lt);
     }
 
     // METODOS BOTONES Entrada
