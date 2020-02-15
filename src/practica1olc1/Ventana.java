@@ -3,6 +3,7 @@ package practica1olc1;
 import Analizadores.Token;
 import Analizadores.AnalizadorLexico;
 import Analizadores.AnalizadorSintactico;
+import Analizadores.Conjunto;
 import com.sun.prism.image.ViewPort;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -280,32 +281,35 @@ public class Ventana extends JFrame {
     }
 
     private void accionBotonGenerarXML(ActionEvent evt) {
-        AnalizadorSintactico as = new AnalizadorSintactico();
-        LinkedList<Token> l = new LinkedList<>();
         
-        l.add(new Token("H","H",0,0));
-        l.add(new Token("O","O",0,0));
-        l.add(new Token("L","L",0,0));
-        l.add(new Token("A","A",0,0));
-        
-        as.analizar(l);
-        
-        as.analizar(l);
         
     }
 
     // METODOS BOTONES Entrada
     private void accionBotonAnalizar(ActionEvent evt) {
-        AnalizadorLexico a = new AnalizadorLexico();
-        a.analizar(jtaEnt.getText());
+        AnalizadorLexico al = new AnalizadorLexico();
+        al.analizar(jtaEnt.getText());
 
-        LinkedList<Token> lisTok = a.obtenerTokens();
+        AnalizadorSintactico as = new AnalizadorSintactico();
+        as.analizar(al.obtenerTokens());
         
         System.out.println("/////////// Inicio Analisis");
-
-        for (Token l : lisTok) {
-            System.out.println("tk: " + l.obtTok() + " lex: " + l.obtLex() + " fil: " + l.obtFil() + " col: " + l.obtCol());
+        LinkedList<Conjunto> lc = as.obtLisCon();
+        for (Conjunto c : lc) {
+            LinkedList<String> le = c.obtEle();
+            System.out.println(c.obtNom());
+            for (String e : le) {
+                System.out.print( e + " ");
+            }
+            System.out.println("");
         }
+        
+        
+//        System.out.println("/////////// Inicio Analisis");
+//
+//        for (Token l : lisTok) {
+//            System.out.println("tk: " + l.obtTok() + " lex: " + l.obtLex() + " fil: " + l.obtFil() + " col: " + l.obtCol());
+//        }
 
         System.out.println("/////////// Fin Analisis");
     }
