@@ -1,4 +1,4 @@
-package practica1olc1;
+package Analizadores;
 
 import java.util.LinkedList;
 
@@ -28,7 +28,6 @@ public class AnalizadorLexico {
 
         // caracter de finalizacion
         tex += "  ";
-        tex = tex.toLowerCase();
 
         while (ite < tex.length()) {
             char car = tex.charAt(ite);
@@ -302,10 +301,16 @@ public class AnalizadorLexico {
     // Metodos de verificacion de lexemas
     private String verTkPalRes(String lex) {
         String tok = "tk_id";
-
+        
+        lex = lex.toLowerCase();
         switch (lex) {
             case "conj":
                 tok = "tk_con";
+                break;
+            default:
+                if (lex.length() == 1) {
+                    tok = "tk_let";
+                }
                 break;
         }
 

@@ -1,5 +1,8 @@
 package practica1olc1;
 
+import Analizadores.Token;
+import Analizadores.AnalizadorLexico;
+import Analizadores.AnalizadorSintactico;
 import com.sun.prism.image.ViewPort;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -277,8 +280,18 @@ public class Ventana extends JFrame {
     }
 
     private void accionBotonGenerarXML(ActionEvent evt) {
-        System.out.println(this.getWidth() + " - " + this.getHeight());
-
+        AnalizadorSintactico as = new AnalizadorSintactico();
+        LinkedList<Token> l = new LinkedList<>();
+        
+        l.add(new Token("H","H",0,0));
+        l.add(new Token("O","O",0,0));
+        l.add(new Token("L","L",0,0));
+        l.add(new Token("A","A",0,0));
+        
+        as.analizar(l);
+        
+        as.analizar(l);
+        
     }
 
     // METODOS BOTONES Entrada
