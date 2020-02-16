@@ -36,7 +36,7 @@ public class AnalizadorSintactico {
             est1();
         } else if (tk.obtTok().equals("tk_id")) {
             System.out.println("");
-            System.out.print("ER: " + tk.obtLex());
+            System.out.print(tk.obtLex());
             sigIte();
             est11();
         } else if (tk.obtTok().equals("")) {
@@ -160,6 +160,9 @@ public class AnalizadorSintactico {
         if (tk.obtTok().equals("tk_gui")) {
             sigIte();
             est12();
+        } else if (tk.obtTok().equals("tk_dosPun")) {
+            sigIte();
+            est23();
         } else {
             estE();
         }
@@ -200,7 +203,7 @@ public class AnalizadorSintactico {
 
     private void est15() {
         if (tk.obtTok().equals("tk_punCom")) {
-            System.out.print(" ER finalizada");
+            System.out.print(" -> ER finalizada");
             sigIte();
             est0();
         } else {
@@ -291,6 +294,27 @@ public class AnalizadorSintactico {
         }
     }
 
+    /////////////////////// Cadenas de entrada
+    private void est23() {
+        if (tk.obtTok().equals("tk_texto")) {
+            System.out.print(" " + tk.obtLex());
+            sigIte();
+            est24();
+        } else {
+            estE();
+        }
+    }
+
+    private void est24() {
+        if (tk.obtTok().equals("tk_punCom")) {
+            System.out.print(" -> Cadena de Entrada");
+            sigIte();
+            est0();
+        } else {
+            estE();
+        }
+    }
+
     /////////////////////// Metodo de Error
     private void estE() {
         if (tk.obtTok().equals("tk_punCom")) {
@@ -314,7 +338,6 @@ public class AnalizadorSintactico {
     private void sigIte() {
         if (ite.hasNext()) {
             tk = (Token) ite.next();
-            //System.out.println(tk.obtLex() + " - " + tk.obtTok());
         }
     }
 
