@@ -35,6 +35,7 @@ public class AnalizadorSintactico {
             sigIte();
             est1();
         } else if (tk.obtTok().equals("tk_id")) {
+            System.out.print("ER: " + tk.obtLex());
             sigIte();
             est11();
         } else if (tk.obtTok().equals("")) {
@@ -154,7 +155,6 @@ public class AnalizadorSintactico {
     }
 
     /////////////////////// Expreciones Regulares
-    // Expresion1 -> .
     private void est11() {
         if (tk.obtTok().equals("tk_gui")) {
             sigIte();
@@ -167,9 +167,125 @@ public class AnalizadorSintactico {
     private void est12() {
         if (tk.obtTok().equals("tk_may")) {
             sigIte();
-            // est
+            est13();
         } else {
             estE();
+        }
+    }
+
+    private void est13() {
+        if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto")) {
+            est14();
+        } else if (tk.obtTok().equals("tk_llaAbr")) {
+            est16();
+        } else if (tk.obtTok().equals("tk_pun") | tk.obtTok().equals("tk_barVer") | tk.obtTok().equals("tk_ast") | tk.obtTok().equals("tk_mas") | tk.obtTok().equals("tk_cieInt")) {
+            if (est19()) {
+                est15();
+            }
+        } else {
+            estE();
+        }
+    }
+
+    // estados de solo 1 texto o numero
+    private void est14() {
+        if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto")) {
+            System.out.print(" " + tk.obtLex());
+            sigIte();
+            est15();
+        } else {
+            estE();
+        }
+    }
+
+    private void est15() {
+        if (tk.obtTok().equals("tk_punCom")) {
+            System.out.println(" " + tk.obtLex());
+            sigIte();
+            est0();
+        } else {
+            estE();
+        }
+    }
+
+    // estados de solo 1 conjunto
+    private void est16() {
+        if (tk.obtTok().equals("tk_llaAbr")) {
+            System.out.print(" " + tk.obtLex());
+            sigIte();
+            est17();
+        } else {
+            estE();
+        }
+    }
+
+    private void est17() {
+        if (tk.obtTok().equals("tk_id")) {
+            System.out.print(" " + tk.obtLex());
+            sigIte();
+            est18();
+        } else {
+            estE();
+        }
+    }
+
+    private void est18() {
+        if (tk.obtTok().equals("tk_llaCie")) {
+            System.out.print(" " + tk.obtLex());
+            sigIte();
+            est15();
+        } else {
+            estE();
+        }
+    }
+
+    // estados recurcivos
+    private boolean est19() {
+        if (tk.obtTok().equals("tk_pun") | tk.obtTok().equals("tk_barVer")) {
+            sigIte();
+            return est20() & est20();
+        } else if (tk.obtTok().equals("tk_ast") | tk.obtTok().equals("tk_mas") | tk.obtTok().equals("tk_cieInt")) {
+            sigIte();
+            return est20();
+        } else {
+            estE();
+            return false;
+        }
+    }
+
+    private boolean est20() {
+        if (tk.obtTok().equals("tk_numero") | tk.obtTok().equals("tk_texto")) {
+            sigIte();
+            return true;
+        } else if (tk.obtTok().equals("tk_llaAbr")) {
+            sigIte();
+            return est21();
+        } else if (tk.obtTok().equals("tk_pun") | tk.obtTok().equals("tk_barVer") | tk.obtTok().equals("tk_ast") | tk.obtTok().equals("tk_mas") | tk.obtTok().equals("tk_cieInt")) {
+            sigIte();
+            return est19();
+        } else {
+            estE();
+            return false;
+        }
+    }
+
+    private boolean est21() {
+        if (tk.obtTok().equals("tk_id")) {
+            sigIte();
+            return est22();
+        } else {
+            estE();
+            return false;
+        }
+    }
+
+    private boolean est22() {
+        if (tk.obtTok().equals("tk_llaCie")) {
+            sigIte();
+            return true;
+        } else {
+            estE();
+            return false;
         }
     }
 
@@ -185,6 +301,8 @@ public class AnalizadorSintactico {
             est0();
         } else if (tk.obtTok().equals("tk_con")) {
             est0();
+        } else if (tk.obtTok().equals("")) {
+            // termina la ejecucion
         } else {
             sigIte();
             estE();

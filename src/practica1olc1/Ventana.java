@@ -281,15 +281,12 @@ public class Ventana extends JFrame {
     }
 
     private void accionBotonGenerarXML(ActionEvent evt) {
-        AnalizadorSintactico as = new AnalizadorSintactico();
-        
-        LinkedList<Token> lt = new LinkedList<>();
-        lt.add(new Token("H", "H", 0, 0));
-        lt.add(new Token("O", "O", 0, 0));
-        lt.add(new Token("L", "L", 0, 0));
-        lt.add(new Token("A", "A", 0, 0));
-        
-        as.analizar(lt);
+        boolean a = true;
+        boolean b = true;
+        System.out.println(a & b);
+        System.out.println(!a & b);
+        System.out.println(a & !b);
+        System.out.println(!a & !b);
     }
 
     // METODOS BOTONES Entrada
@@ -299,25 +296,23 @@ public class Ventana extends JFrame {
 
         AnalizadorSintactico as = new AnalizadorSintactico();
         as.analizar(al.obtenerTokens());
-        
+
         System.out.println("/////////// Inicio Analisis");
         LinkedList<Conjunto> lc = as.obtLisCon();
         for (Conjunto c : lc) {
             LinkedList<String> le = c.obtEle();
             System.out.println(c.obtNom());
             for (String e : le) {
-                System.out.print( e + " ");
+                System.out.print(e + " ");
             }
             System.out.println("");
         }
-        
-        
+
 //        System.out.println("/////////// Inicio Analisis");
 //
 //        for (Token l : lisTok) {
 //            System.out.println("tk: " + l.obtTok() + " lex: " + l.obtLex() + " fil: " + l.obtFil() + " col: " + l.obtCol());
 //        }
-
         System.out.println("/////////// Fin Analisis");
     }
 

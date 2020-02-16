@@ -3,10 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/G:/Materias/Compi1/Practica1/Practica1OLC1/src/practica1olc1/Token.java</file>
+            <file>file:/G:/Materias/Compi1/Practica1/Practica1OLC1/src/Analizadores/AnalizadorLexico.java</file>
             <file>file:/G:/Materias/Compi1/Practica1/Practica1OLC1/src/practica1olc1/Practica1OLC1.java</file>
             <file>file:/G:/Materias/Compi1/Practica1/Practica1OLC1/src/practica1olc1/Ventana.java</file>
-            <file>file:/G:/Materias/Compi1/Practica1/Practica1OLC1/src/practica1olc1/AnalizadorLexico.java</file>
+            <file>file:/G:/Materias/Compi1/Practica1/Practica1OLC1/src/Analizadores/AnalizadorSintactico.java</file>
         </group>
     </open-files>
 </project-private>
