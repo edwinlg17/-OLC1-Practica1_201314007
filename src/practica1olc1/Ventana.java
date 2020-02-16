@@ -281,12 +281,16 @@ public class Ventana extends JFrame {
     }
 
     private void accionBotonGenerarXML(ActionEvent evt) {
-        boolean a = true;
-        boolean b = true;
-        System.out.println(a & b);
-        System.out.println(!a & b);
-        System.out.println(a & !b);
-        System.out.println(!a & !b);
+        LinkedList<Integer> ll = new LinkedList<>();
+        ll.add(1);
+        ll.add(2);
+        ll.add(3);
+        ll.add(4);
+        ll.add(5);
+        
+        System.out.println(ll.contains(3));
+        System.out.println(ll.contains(5));
+        System.out.println(ll.contains(7));
     }
 
     // METODOS BOTONES Entrada
