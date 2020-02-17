@@ -3,6 +3,7 @@ package practica1olc1;
 import Analizadores.Token;
 import Analizadores.AnalizadorLexico;
 import Analizadores.AnalizadorSintactico;
+import Analizadores.Arbol;
 import Analizadores.Conjunto;
 import com.sun.prism.image.ViewPort;
 import java.awt.BorderLayout;
@@ -281,16 +282,7 @@ public class Ventana extends JFrame {
     }
 
     private void accionBotonGenerarXML(ActionEvent evt) {
-        LinkedList<Integer> ll = new LinkedList<>();
-        ll.add(1);
-        ll.add(2);
-        ll.add(3);
-        ll.add(4);
-        ll.add(5);
-        
-        System.out.println(ll.contains(3));
-        System.out.println(ll.contains(5));
-        System.out.println(ll.contains(7));
+       
     }
 
     // METODOS BOTONES Entrada
@@ -302,15 +294,24 @@ public class Ventana extends JFrame {
         as.analizar(al.obtenerTokens());
 
         System.out.println("/////////// Inicio Analisis");
-        LinkedList<Conjunto> lc = as.obtLisCon();
-        for (Conjunto c : lc) {
-            LinkedList<String> le = c.obtEle();
-            System.out.println(c.obtNom());
-            for (String e : le) {
-                System.out.print(e + " ");
-            }
+        LinkedList<Arbol> le = as.obtLisExp();
+        
+        for (Arbol t: le) {
             System.out.println("");
+            t.impArb();
         }
+        
+        
+//        LinkedList<Conjunto> lc = as.obtLisCon();
+//        
+//        for (Conjunto c : lc) {
+//            LinkedList<String> le = c.obtEle();
+//            System.out.println(c.obtNom());
+//            for (String e : le) {
+//                System.out.print(e + " ");
+//            }
+//            System.out.println("");
+//        }
 
 //        System.out.println("/////////// Inicio Analisis");
 //

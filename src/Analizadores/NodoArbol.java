@@ -5,14 +5,26 @@ import java.util.LinkedList;
 public class NodoArbol {
 
     //////////////// ATRIBUTOS
-    private String sim, anu;
+    private Token sim;
+    private String anu;
     private LinkedList<Integer> ant, sig;
     private int num;
-    private NodoArbol izq, der;
+    NodoArbol izq, der;
+//    private NodoArbol izq, der;
 
     //////////////// CONSTRUCTOR
     public NodoArbol() {
-        this.sim = "";
+        this.sim = new Token();
+        this.anu = "";
+        this.ant = new LinkedList<>();
+        this.sig = new LinkedList<>();
+        this.num = -1;
+        this.izq = null;
+        this.der = null;
+    }
+
+    public NodoArbol(Token sim) {
+        this.sim = sim;
         this.anu = "";
         this.ant = new LinkedList<>();
         this.sig = new LinkedList<>();
@@ -23,7 +35,7 @@ public class NodoArbol {
 
     //////////////// METODOS
     // metodos establecer
-    public void estSim(String sim) {
+    public void estSim(Token sim) {
         this.sim = sim;
     }
 
@@ -43,16 +55,8 @@ public class NodoArbol {
         this.num = num;
     }
 
-    public void estIzq(NodoArbol izq) {
-        this.izq = izq;
-    }
-
-    public void estDer(NodoArbol der) {
-        this.der = der;
-    }
-
     // metodos obtener
-    public String obtSim() {
+    public Token obtSim() {
         return sim;
     }
 
@@ -70,14 +74,6 @@ public class NodoArbol {
 
     public int obtNum() {
         return num;
-    }
-
-    public NodoArbol obtIzq() {
-        return izq;
-    }
-
-    public NodoArbol obtDer() {
-        return der;
     }
 
 }

@@ -6,14 +6,17 @@ import java.util.ListIterator;
 public class AnalizadorSintactico {
 
     //////////////// ATRIBUTOS
-    private LinkedList<Conjunto> lisCon;
     private ListIterator ite;
+    private LinkedList<Conjunto> lisCon;
     private Conjunto con;
+    private LinkedList<Arbol> lisExp;
+    private Arbol exp;
     private Token tk;
 
     //////////////// CONSTRUCTOR
     public AnalizadorSintactico() {
         lisCon = new LinkedList<>();
+        lisExp = new LinkedList<>();
     }
 
     ////////////////METODOS
@@ -35,8 +38,7 @@ public class AnalizadorSintactico {
             sigIte();
             est1();
         } else if (tk.obtTok().equals("tk_id")) {
-            System.out.println("");
-            System.out.print(tk.obtLex());
+            exp = new Arbol(tk.obtLex());
             sigIte();
             est11();
         } else if (tk.obtTok().equals("")) {
@@ -179,11 +181,12 @@ public class AnalizadorSintactico {
 
     private void est13() {
         if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto")) {
+            exp.agregar("rai", tk);
             est14();
         } else if (tk.obtTok().equals("tk_llaAbr")) {
             est16();
         } else if (tk.obtTok().equals("tk_pun") || tk.obtTok().equals("tk_barVer") || tk.obtTok().equals("tk_ast") || tk.obtTok().equals("tk_mas") || tk.obtTok().equals("tk_cieInt")) {
-            if (est19()) {
+            if (est19("rai")) {
                 est15();
             }
         } else {
@@ -203,7 +206,7 @@ public class AnalizadorSintactico {
 
     private void est15() {
         if (tk.obtTok().equals("tk_punCom")) {
-            System.out.print(" -> ER finalizada");
+            lisExp.add(exp);
             sigIte();
             est0();
         } else {
@@ -240,41 +243,40 @@ public class AnalizadorSintactico {
     }
 
     // estados recurcivos
-    private boolean est19() {
+    private boolean est19(String pos) {
         if (tk.obtTok().equals("tk_pun") || tk.obtTok().equals("tk_barVer")) {
-            System.out.print(" " + tk.obtLex());
+            exp.agregar(pos, tk);
             sigIte();
-            return est20() & est20();
+            return est20(pos + "-izq") & est20(pos + "-der");
         } else if (tk.obtTok().equals("tk_ast") || tk.obtTok().equals("tk_mas") || tk.obtTok().equals("tk_cieInt")) {
-            System.out.print(" " + tk.obtLex());
+            exp.agregar(pos, tk);
             sigIte();
-            return est20();
+            return est20(pos + "-izq");
         } else {
             estE();
             return false;
         }
     }
 
-    private boolean est20() {
+    private boolean est20(String pos) {
         if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto")) {
-            System.out.print(" " + tk.obtLex());
+            exp.agregar(pos, tk);
             sigIte();
             return true;
         } else if (tk.obtTok().equals("tk_llaAbr")) {
-            System.out.print(" " + tk.obtLex());
             sigIte();
-            return est21();
+            return est21(pos);
         } else if (tk.obtTok().equals("tk_pun") || tk.obtTok().equals("tk_barVer") || tk.obtTok().equals("tk_ast") || tk.obtTok().equals("tk_mas") || tk.obtTok().equals("tk_cieInt")) {
-            return est19();
+            return est19(pos);
         } else {
             estE();
             return false;
         }
     }
 
-    private boolean est21() {
+    private boolean est21(String pos) {
         if (tk.obtTok().equals("tk_id")) {
-            System.out.print(" " + tk.obtLex());
+            exp.agregar(pos, tk);
             sigIte();
             return est22();
         } else {
@@ -285,7 +287,6 @@ public class AnalizadorSintactico {
 
     private boolean est22() {
         if (tk.obtTok().equals("tk_llaCie")) {
-            System.out.print(" " + tk.obtLex());
             sigIte();
             return true;
         } else {
@@ -297,7 +298,6 @@ public class AnalizadorSintactico {
     /////////////////////// Cadenas de entrada
     private void est23() {
         if (tk.obtTok().equals("tk_texto")) {
-            System.out.print(" " + tk.obtLex());
             sigIte();
             est24();
         } else {
@@ -307,7 +307,6 @@ public class AnalizadorSintactico {
 
     private void est24() {
         if (tk.obtTok().equals("tk_punCom")) {
-            System.out.print(" -> Cadena de Entrada");
             sigIte();
             est0();
         } else {
@@ -350,6 +349,10 @@ public class AnalizadorSintactico {
     // Otros Metodos
     public LinkedList<Conjunto> obtLisCon() {
         return lisCon;
+    }
+
+    public LinkedList<Arbol> obtLisExp() {
+        return lisExp;
     }
 
 }
