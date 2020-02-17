@@ -6,7 +6,7 @@ public class Conjunto {
 
     //////////////// ATRIBUTOS
     private String nom;
-    private LinkedList<String> ele;
+    private LinkedList<Token> ele;
 
     //////////////// CONSTRUCTOR
     public Conjunto() {
@@ -19,7 +19,7 @@ public class Conjunto {
         this.ele = new LinkedList<>();
     }
 
-    public Conjunto(String nom, LinkedList<String> ele) {
+    public Conjunto(String nom, LinkedList<Token> ele) {
         this.nom = nom;
         this.ele = ele;
     }
@@ -29,7 +29,7 @@ public class Conjunto {
         this.nom = nom;
     }
 
-    public void estEle(LinkedList<String> ele) {
+    public void estEle(LinkedList<Token> ele) {
         this.ele = ele;
     }
 
@@ -37,14 +37,14 @@ public class Conjunto {
         return nom;
     }
 
-    public LinkedList<String> obtEle() {
+    public LinkedList<Token> obtEle() {
         return ele;
     }
 
-    public void agrEle(String ele) {
+    public void agrEle(Token ele) {
         boolean ver = true;
-        for (String s : this.ele) {
-            if (s.equals(ele)) {
+        for (Token s : this.ele) {
+            if (s.obtLex().equals(ele)) {
                 ver = false;
             }
         }

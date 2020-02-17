@@ -3,18 +3,14 @@ package practica1olc1;
 import Analizadores.Token;
 import Analizadores.AnalizadorLexico;
 import Analizadores.AnalizadorSintactico;
-import Analizadores.Arbol;
+import Analizadores.Cadena;
 import Analizadores.Conjunto;
-import com.sun.prism.image.ViewPort;
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,12 +26,10 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
-import javax.swing.JViewport;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -294,11 +288,16 @@ public class Ventana extends JFrame {
         as.analizar(al.obtenerTokens());
 
         System.out.println("/////////// Inicio Analisis");
-        LinkedList<Cadena> lc = as.obtLisCad();
-        
-        for (Token t: lc) {
-            
+        LinkedList<Token> le = as.obtLisErr();
+        for(Token t: le){
+            System.out.println(t.obtDes() + " fil: " + t.obtFil() + " col: " + t.obtCol());
         }
+        
+//        LinkedList<Cadena> lc = as.obtLisCad();
+//        
+//        for (Cadena c: lc) {
+//            System.out.println(c.obtNom() + " - " + c.obtCad().obtLex());
+//        }
         
 //        LinkedList<Arbol> le = as.obtLisExp();
 //        
@@ -307,23 +306,20 @@ public class Ventana extends JFrame {
 //            t.impArb();
 //        }
         
-        
 //        LinkedList<Conjunto> lc = as.obtLisCon();
-//        
-//        for (Conjunto c : lc) {
-//            LinkedList<String> le = c.obtEle();
+//        for(Conjunto c: lc){
 //            System.out.println(c.obtNom());
-//            for (String e : le) {
-//                System.out.print(e + " ");
+//            for(Token t: c.obtEle()){
+//                System.out.print(t.obtLex()+ " ");
 //            }
 //            System.out.println("");
 //        }
 
-//        System.out.println("/////////// Inicio Analisis");
-//
-//        for (Token l : lisTok) {
-//            System.out.println("tk: " + l.obtTok() + " lex: " + l.obtLex() + " fil: " + l.obtFil() + " col: " + l.obtCol());
+//        LinkedList<Token> lt = al.obtenerErrores();
+//        for(Token t: lt){
+//            System.out.println(t.obtDes() + " lex:" + t.obtLex() + " fil: " + t.obtFil() + " col: " + t.obtCol());
 //        }
+        
         System.out.println("/////////// Fin Analisis");
     }
 

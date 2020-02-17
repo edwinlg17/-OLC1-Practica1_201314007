@@ -13,6 +13,7 @@ public class AnalizadorSintactico {
     private Arbol exp;
     private LinkedList<Cadena> lisCad;
     private Cadena cad;
+    private LinkedList<Token> lisErr;
     private Token tk;
 
     //////////////// CONSTRUCTOR
@@ -20,6 +21,7 @@ public class AnalizadorSintactico {
         lisCon = new LinkedList<>();
         lisExp = new LinkedList<>();
         lisCad = new LinkedList<>();
+        lisErr = new LinkedList<>();
     }
 
     ////////////////METODOS
@@ -42,7 +44,7 @@ public class AnalizadorSintactico {
             est1();
         } else if (tk.obtTok().equals("tk_id")) {
             exp = new Arbol(tk.obtLex());
-
+            cad = new Cadena(tk.obtLex());
             sigIte();
             est11();
         } else if (tk.obtTok().equals("")) {
@@ -58,7 +60,8 @@ public class AnalizadorSintactico {
             sigIte();
             est2();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> :");
+            estE(e);
         }
     }
 
@@ -68,7 +71,8 @@ public class AnalizadorSintactico {
             sigIte();
             est3();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> IDENTIFICADOR");
+            estE(e);
         }
     }
 
@@ -77,7 +81,8 @@ public class AnalizadorSintactico {
             sigIte();
             est4();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> -");
+            estE(e);
         }
     }
 
@@ -86,17 +91,19 @@ public class AnalizadorSintactico {
             sigIte();
             est5();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> >");
+            estE(e);
         }
     }
 
     private void est5() {
         if (tk.obtTok().equals("tk_let") | tk.obtTok().equals("tk_numero")) {
-            con.agrEle(tk.obtLex());
+            con.agrEle(tk);
             sigIte();
             est6();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> DIGITO/NUMERO");
+            estE(e);
         }
     }
 
@@ -112,17 +119,19 @@ public class AnalizadorSintactico {
             sigIte();
             est0();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> , ~ ;");
+            estE(e);
         }
     }
 
     private void est7() {
         if (tk.obtTok().equals("tk_let") | tk.obtTok().equals("tk_numero")) {
-            con.agrEle(tk.obtLex());
+            con.agrEle(tk);
             sigIte();
             est8();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> NUMERO");
+            estE(e);
         }
     }
 
@@ -137,17 +146,19 @@ public class AnalizadorSintactico {
             }
             est0();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> , ;");
+            estE(e);
         }
     }
 
     private void est9() {
         if (tk.obtTok().equals("tk_let") | tk.obtTok().equals("tk_numero")) {
-            con.agrEle(tk.obtLex());
+            con.agrEle(tk);
             sigIte();
             est10();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> LETRA/NUMERO");
+            estE(e);
         }
     }
 
@@ -157,7 +168,8 @@ public class AnalizadorSintactico {
             sigIte();
             est0();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> ;");
+            estE(e);
         }
     }
 
@@ -170,7 +182,8 @@ public class AnalizadorSintactico {
             sigIte();
             est23();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> - :");
+            estE(e);
         }
     }
 
@@ -179,7 +192,8 @@ public class AnalizadorSintactico {
             sigIte();
             est13();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> >");
+            estE(e);
         }
     }
 
@@ -194,7 +208,8 @@ public class AnalizadorSintactico {
                 est15();
             }
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> NUMERO/TEXTO { . | * + ?");
+            estE(e);
         }
     }
 
@@ -204,7 +219,8 @@ public class AnalizadorSintactico {
             sigIte();
             est15();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> NUMERO/TEXTO");
+            estE(e);
         }
     }
 
@@ -214,7 +230,8 @@ public class AnalizadorSintactico {
             sigIte();
             est0();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> ;");
+            estE(e);
         }
     }
 
@@ -224,7 +241,8 @@ public class AnalizadorSintactico {
             sigIte();
             est17();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> {");
+            estE(e);
         }
     }
 
@@ -233,7 +251,8 @@ public class AnalizadorSintactico {
             sigIte();
             est18();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> IDENTIFICADOR");
+            estE(e);
         }
     }
 
@@ -242,7 +261,8 @@ public class AnalizadorSintactico {
             sigIte();
             est15();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> }");
+            estE(e);
         }
     }
 
@@ -257,7 +277,8 @@ public class AnalizadorSintactico {
             sigIte();
             return est20(pos + "-izq");
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> . | * + ?");
+            estE(e);
             return false;
         }
     }
@@ -273,7 +294,8 @@ public class AnalizadorSintactico {
         } else if (tk.obtTok().equals("tk_pun") || tk.obtTok().equals("tk_barVer") || tk.obtTok().equals("tk_ast") || tk.obtTok().equals("tk_mas") || tk.obtTok().equals("tk_cieInt")) {
             return est19(pos);
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> NUMERO/TEXTO { . | * + ?");
+            estE(e);
             return false;
         }
     }
@@ -284,7 +306,8 @@ public class AnalizadorSintactico {
             sigIte();
             return est22();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> IDENTIFICADOR");
+            estE(e);
             return false;
         }
     }
@@ -294,7 +317,8 @@ public class AnalizadorSintactico {
             sigIte();
             return true;
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> }");
+            estE(e);
             return false;
         }
     }
@@ -307,7 +331,8 @@ public class AnalizadorSintactico {
             sigIte();
             est24();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> TEXTO");
+            estE(e);
         }
     }
 
@@ -316,13 +341,15 @@ public class AnalizadorSintactico {
             sigIte();
             est0();
         } else {
-            estE();
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> ;");
+            estE(e);
         }
     }
 
     /////////////////////// Metodo de Error
-    private void estE() {
+    private void estE(Token err) {
         if (tk.obtTok().equals("tk_punCom")) {
+            lisErr.add(err);
             sigIte();
             est0();
         } else if (tk.obtTok().equals("tk_gui")) {
@@ -336,7 +363,7 @@ public class AnalizadorSintactico {
             // termina la ejecucion
         } else {
             sigIte();
-            estE();
+            estE(err);
         }
     }
 
@@ -363,5 +390,9 @@ public class AnalizadorSintactico {
 
     public LinkedList<Cadena> obtLisCad() {
         return lisCad;
+    }
+    
+    public LinkedList<Token> obtLisErr(){
+        return lisErr;
     }
 }

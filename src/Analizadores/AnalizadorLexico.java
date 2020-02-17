@@ -91,7 +91,7 @@ public class AnalizadorLexico {
                         lex += car;
                         cl = col;
                         fl = fil;
-                        lisErr.add(new Token("Caracter Desconocido", lex, fl, cl));
+                        lisErr.add(new Token("Caracter Desconocido", lex, fl, cl, "Caracter Desconocido"));
                         //System.out.println("ERROR LEXICO: " + car + " - " + fl + " - " + cl);
                         lex = "";
                         col++;
