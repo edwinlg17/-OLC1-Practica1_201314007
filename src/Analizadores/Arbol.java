@@ -1,18 +1,21 @@
 package Analizadores;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 public class Arbol {
 
     //////////////// ATRIBUTOS
     private NodoArbol raiz;
+    private LinkedList<Siguiente> lisSig;
     private String nom;
     private int ind;
 
     //////////////// CONSTRUCTOR
     public Arbol(String nom) {
+        this.lisSig = new LinkedList<>();
         this.nom = nom;
-        raiz = null;
+        this.raiz = null;
     }
 
     //////////////// METODOS
@@ -40,7 +43,8 @@ public class Arbol {
         }
     }
 
-    private void verAnu(NodoArbol nt) {
+    // Metodo Analizar Arbol
+    private void anaArb(NodoArbol nt) {
         if (nt != null) {
             //////////////////// Anulables
             // Anulable para * y ?
@@ -51,15 +55,16 @@ public class Arbol {
             boolean hoj = true;
             if (nt.izq != null) {
                 hoj = false;
-                verAnu(nt.izq);
+                anaArb(nt.izq);
             }
             if (nt.der != null) {
                 hoj = false;
-                verAnu(nt.der);
+                anaArb(nt.der);
             }
 
             // Anulable para hoja
             if (hoj) {
+                lisSig.add(new Siguiente(nt));
                 nt.agrAnt(ind);
                 nt.agrSig(ind);
                 nt.estNun(ind++);
@@ -112,12 +117,79 @@ public class Arbol {
         }
     }
 
+    // Otros Metodo de Analizar Arbol
+    private LinkedList<Integer> agrAntSig(LinkedList<Integer> la, LinkedList<Integer> ls) {
+        for (Integer i : ls) {
+            la.add(i);
+        }
+        return la;
+    }
+
+    // Metodo Generar Tabla de Siguientes
+    private void genTabSig() {
+        lisSig = new LinkedList<>();
+        ind = 1;
+        anaArb(raiz);
+        genTabSig(raiz);
+        String cod = "<TR>\n\t<TD COLSPAN=\"3\">Tabla de Siguientes</TD>\n</TR>\n";
+        cod += "<TR>\n\t<TD>#</TD>\n\t<TD>Simbolo</TD>\n\t<TD>Siguientes</TD>\n</TR>\n";
+        for (Siguiente s : lisSig) {
+            cod += "<TR>\n";
+            cod += "\t<TD>" + s.obtSim().obtNum() + "</TD>\n";
+            cod += "\t<TD>" + s.obtSim().obtSim().obtLex() + "</TD>\n";
+            cod += "\t<TD>";
+            Collections.sort(s.obtLisSig());
+            for (int i = 0; i < s.obtLisSig().size(); i++) {
+                cod += s.obtLisSig().get(i);
+                if (i < s.obtLisSig().size() - 1) {
+                    cod += ", ";
+                }
+            }
+            cod += "</TD>\n";
+            cod += "</TR>\n";
+        }
+        System.out.println(cod);
+    }
+
+    private void genTabSig(NodoArbol nt) {
+        if (nt != null) {
+            if (nt.obtSim().obtTok().equals("tk_pun")) {
+                for (Integer s : nt.izq.obtSig()) {
+                    for (Integer a : nt.der.obtAnt()) {
+                        for (Siguiente na : lisSig) {
+                            if (s == na.obtSim().obtNum()) {
+                                na.agrLisSig(a);
+                                break;
+                            }
+                        }
+                    }
+                }
+            } else if (nt.obtSim().obtTok().equals("tk_ast") || nt.obtSim().obtTok().equals("tk_mas")) {
+                for (Integer s : nt.obtSig()) {
+                    for (Integer a : nt.obtAnt()) {
+                        for (Siguiente na : lisSig) {
+                            if (s == na.obtSim().obtNum()) {
+                                na.agrLisSig(a);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (nt.izq != null) {
+                genTabSig(nt.izq);
+            }
+            if (nt.der != null) {
+                genTabSig(nt.der);
+            }
+        }
+    }
+
     // Metodo Imprimir Arbol
     public void impArb() {
-        ind = 1;
-        verAnu(raiz);
+        genTabSig();
         System.out.println("///////////\n");
-        obtCodArb();
+        //obtCodArb();
     }
 
     public void impArb(NodoArbol nt) {
@@ -169,6 +241,7 @@ public class Arbol {
         }
     }
 
+    // Otros Metodos de obtCodArb
     private String obtLisSigAnt(LinkedList<Integer> lis) {
         String cad = "";
         for (int i = 0; i < lis.size(); i++) {
@@ -178,13 +251,6 @@ public class Arbol {
             }
         }
         return cad;
-    }
-
-    private LinkedList<Integer> agrAntSig(LinkedList<Integer> la, LinkedList<Integer> ls) {
-        for (Integer i : ls) {
-            la.add(i);
-        }
-        return la;
     }
 
     // Metodos Establecer y Obtener
