@@ -10,7 +10,6 @@ public class NodoArbol {
     private LinkedList<Integer> ant, sig;
     private int num;
     NodoArbol izq, der;
-//    private NodoArbol izq, der;
 
     //////////////// CONSTRUCTOR
     public NodoArbol() {

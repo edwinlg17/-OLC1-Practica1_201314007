@@ -11,12 +11,15 @@ public class AnalizadorSintactico {
     private Conjunto con;
     private LinkedList<Arbol> lisExp;
     private Arbol exp;
+    private LinkedList<Cadena> lisCad;
+    private Cadena cad;
     private Token tk;
 
     //////////////// CONSTRUCTOR
     public AnalizadorSintactico() {
         lisCon = new LinkedList<>();
         lisExp = new LinkedList<>();
+        lisCad = new LinkedList<>();
     }
 
     ////////////////METODOS
@@ -39,6 +42,7 @@ public class AnalizadorSintactico {
             est1();
         } else if (tk.obtTok().equals("tk_id")) {
             exp = new Arbol(tk.obtLex());
+
             sigIte();
             est11();
         } else if (tk.obtTok().equals("")) {
@@ -298,6 +302,8 @@ public class AnalizadorSintactico {
     /////////////////////// Cadenas de entrada
     private void est23() {
         if (tk.obtTok().equals("tk_texto")) {
+            cad.estCad(tk);
+            lisCad.add(cad);
             sigIte();
             est24();
         } else {
@@ -355,4 +361,7 @@ public class AnalizadorSintactico {
         return lisExp;
     }
 
+    public LinkedList<Cadena> obtLisCad() {
+        return lisCad;
+    }
 }

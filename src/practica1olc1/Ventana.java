@@ -294,12 +294,18 @@ public class Ventana extends JFrame {
         as.analizar(al.obtenerTokens());
 
         System.out.println("/////////// Inicio Analisis");
-        LinkedList<Arbol> le = as.obtLisExp();
+        LinkedList<Cadena> lc = as.obtLisCad();
         
-        for (Arbol t: le) {
-            System.out.println("");
-            t.impArb();
+        for (Token t: lc) {
+            
         }
+        
+//        LinkedList<Arbol> le = as.obtLisExp();
+//        
+//        for (Arbol t: le) {
+//            System.out.println("");
+//            t.impArb();
+//        }
         
         
 //        LinkedList<Conjunto> lc = as.obtLisCon();
