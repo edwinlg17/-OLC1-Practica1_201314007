@@ -44,6 +44,7 @@ public class AnalizadorSintactico {
             est1();
         } else if (tk.obtTok().equals("tk_id")) {
             exp = new Arbol(tk.obtLex());
+            exp.agregar("rai", new Token("tk_pun", ".", 0, 0));
             cad = new Cadena(tk.obtLex());
             sigIte();
             est11();
@@ -235,12 +236,12 @@ public class AnalizadorSintactico {
 
     private void est13() {
         if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto")) {
-            exp.agregar("rai", tk);
+            exp.agregar("rai-izq", tk);
             est14();
         } else if (tk.obtTok().equals("tk_llaAbr")) {
             est16();
         } else if (tk.obtTok().equals("tk_pun") || tk.obtTok().equals("tk_barVer") || tk.obtTok().equals("tk_ast") || tk.obtTok().equals("tk_mas") || tk.obtTok().equals("tk_cieInt")) {
-            if (est19("rai")) {
+            if (est19("rai-izq")) {
                 est15();
             }
         } else {
@@ -262,6 +263,7 @@ public class AnalizadorSintactico {
 
     private void est15() {
         if (tk.obtTok().equals("tk_punCom")) {
+            exp.agregar("rai-der", new Token("tk_num", "#", 0, 0));
             lisExp.add(exp);
             sigIte();
             est0();

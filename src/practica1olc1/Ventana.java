@@ -311,11 +311,13 @@ public class Ventana extends JFrame {
 //        for (Cadena c: lc) {
 //            System.out.println(c.obtNom() + " - " + c.obtCad().obtLex());
 //        }
-//        LinkedList<Arbol> le = as.obtLisExp();
-//        
-//        for (Arbol t: le) {
-//            t.impArb();
-//        }
+
+        LinkedList<Arbol> lex = as.obtLisExp();
+        
+        for (Arbol t: lex) {
+            t.impArb();
+        }
+        
 //        LinkedList<Conjunto> lc = as.obtLisCon();
 //        for(Conjunto c: lc){
 //            System.out.println(c.obtNom());
@@ -349,9 +351,10 @@ public class Ventana extends JFrame {
             JLabel jl = new JLabel();
 
             ImageIcon fot = new ImageIcon(f.getPath());
-            double w = fot.getIconHeight() * 0.25;
-            double h = fot.getIconWidth() * 0.25;
-            Icon icono = new ImageIcon(fot.getImage().getScaledInstance((int) h, (int) w, Image.SCALE_DEFAULT));
+//            double w = fot.getIconHeight() * 0.9;
+//            double h = fot.getIconWidth() * 0.9;
+//            Icon icono = new ImageIcon(fot.getImage().getScaledInstance((int) h, (int) w, Image.SCALE_DEFAULT));
+            Icon icono = new ImageIcon(fot.getImage().getScaledInstance(fot.getIconWidth(), fot.getIconHeight(), Image.SCALE_DEFAULT));
             jl.setIcon(icono);
 
             jspImg.setViewportView(jl);

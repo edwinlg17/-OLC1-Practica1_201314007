@@ -1,5 +1,7 @@
 package Analizadores;
 
+import java.util.LinkedList;
+
 public class Arbol {
 
     //////////////// ATRIBUTOS
@@ -40,9 +42,12 @@ public class Arbol {
 
     private void verAnu(NodoArbol nt) {
         if (nt != null) {
+            //////////////////// Anulables
+            // Anulable para * y ?
             if (nt.obtSim().obtTok().equals("tk_ast") || nt.obtSim().obtTok().equals("tk_cieInt")) {
                 nt.estAnu("A");
             }
+
             boolean hoj = true;
             if (nt.izq != null) {
                 hoj = false;
@@ -52,10 +57,16 @@ public class Arbol {
                 hoj = false;
                 verAnu(nt.der);
             }
+
+            // Anulable para hoja
             if (hoj) {
+                nt.agrAnt(ind);
+                nt.agrSig(ind);
                 nt.estNun(ind++);
                 nt.estAnu("N");
             }
+
+            // Anulable para . | y +
             if (nt.obtSim().obtTok().equals("tk_pun")) {
                 if (nt.izq.obtAnu().equals("A") && nt.der.obtAnu().equals("A")) {
                     nt.estAnu("A");
@@ -75,12 +86,35 @@ public class Arbol {
                     nt.estAnu("N");
                 }
             }
+            //////////////////// Siguientes
+            if (nt.obtSim().obtTok().equals("tk_pun")) {
+                // anteriores
+                nt.estAnt(agrAntSig(nt.obtAnt(), nt.izq.obtAnt()));
+                if (nt.izq.obtAnu().equals("A")) {
+                    nt.estAnt(agrAntSig(nt.obtAnt(), nt.der.obtAnt()));
+                }
+                // siguientes
+                if (nt.der.obtAnu().equals("A")) {
+                    nt.estSig(agrAntSig(nt.obtSig(), nt.izq.obtSig()));
+                }
+                nt.estSig(agrAntSig(nt.obtSig(), nt.der.obtSig()));
+            } else if (nt.obtSim().obtTok().equals("tk_barVer")) {
+                // anteriores
+                nt.estAnt(agrAntSig(nt.obtAnt(), nt.izq.obtAnt()));
+                nt.estAnt(agrAntSig(nt.obtAnt(), nt.der.obtAnt()));
+                // siguientes
+                nt.estSig(agrAntSig(nt.obtSig(), nt.izq.obtSig()));
+                nt.estSig(agrAntSig(nt.obtSig(), nt.der.obtSig()));
+            } else if (nt.obtSim().obtTok().equals("tk_ast") || nt.obtSim().obtTok().equals("tk_mas") || nt.obtSim().obtTok().equals("tk_cieInt")) {
+                nt.estAnt(agrAntSig(nt.obtAnt(), nt.izq.obtAnt()));
+                nt.estSig(agrAntSig(nt.obtSig(), nt.izq.obtSig()));
+            }
         }
     }
 
     // Metodo Imprimir Arbol
     public void impArb() {
-        int ind = 0;
+        ind = 1;
         verAnu(raiz);
         System.out.println("///////////\n");
         obtCodArb();
@@ -101,11 +135,9 @@ public class Arbol {
     // Metodo obtCodArb
     public void obtCodArb() {
         ind = 0;
-        System.out.println("0" + "[label=\"" + raiz.obtSim().obtLex().replace("\"", "\\\"") + "\"];");
+        System.out.println(ind + "[label=\"" + raiz.obtSim().obtLex().replace("\"", "\\\"") + "\"];");
         if (raiz.obtNum() != -1) {
-            System.out.println("0:s->0:s[color=transparent, taillabel = <<font color=\"green\">" + raiz.obtNum() + "</font>>];");
-            System.out.println("0:w->0:w[color=transparent, taillabel = <<font color=\"blue\">" + raiz.obtNum() + "</font>>];");
-            System.out.println("0:e->0:e[color=transparent, taillabel = <<font color=\"orange\">" + raiz.obtNum() + "</font>>];");
+            System.out.println(ind + ":s->" + ind + ":s[color=transparent, taillabel = <<font color=\"green\">" + raiz.obtNum() + "</font>>];");
         }
         obtCodArb(raiz);
     }
@@ -113,12 +145,17 @@ public class Arbol {
     private void obtCodArb(NodoArbol nt) {
         if (nt != null) {
             String pad = String.valueOf(ind);
-            System.out.println(ind + ":n->" + ind + ":n[color=transparent, taillabel = <<font color=\"red\"> " + nt.obtAnu() + "</font>>];");
+            System.out.println(ind + ":n->" + ind + ":n[color=transparent, taillabel = <<font color=\"red\">" + nt.obtAnu() + "</font>>];");
             if (nt.obtNum() != -1) {
                 System.out.println(ind + ":s->" + ind + ":s[color=transparent, taillabel = <<font color=\"green\">" + nt.obtNum() + "</font>>];");
-                System.out.println(ind + ":w->" + ind + ":w[color=transparent, taillabel = <<font color=\"blue\">" + nt.obtNum() + "</font>>];");
-                System.out.println(ind + ":e->" + ind + ":e[color=transparent, taillabel = <<font color=\"orange\">" + nt.obtNum() + "</font>>];");
             }
+            if (!nt.obtAnt().isEmpty()) {
+                System.out.println(ind + ":w->" + ind + ":w[color=transparent, taillabel = <<font color=\"blue\">" + obtLisSigAnt(nt.obtAnt()) + "</font>>];");
+            }
+            if (!nt.obtSig().isEmpty()) {
+                System.out.println(ind + ":e->" + ind + ":e[color=transparent, taillabel = <<font color=\"orange\">" + obtLisSigAnt(nt.obtSig()) + "</font>>];");
+            }
+
             if (nt.izq != null) {
                 System.out.println(String.valueOf(++ind) + "[label=\"" + nt.izq.obtSim().obtLex().replace("\"", "\\\"") + "\"];");
                 System.out.println(pad + "->" + ind + ";");
@@ -130,6 +167,24 @@ public class Arbol {
                 obtCodArb(nt.der);
             }
         }
+    }
+
+    private String obtLisSigAnt(LinkedList<Integer> lis) {
+        String cad = "";
+        for (int i = 0; i < lis.size(); i++) {
+            cad += lis.get(i);
+            if (i < lis.size() - 1) {
+                cad += ", ";
+            }
+        }
+        return cad;
+    }
+
+    private LinkedList<Integer> agrAntSig(LinkedList<Integer> la, LinkedList<Integer> ls) {
+        for (Integer i : ls) {
+            la.add(i);
+        }
+        return la;
     }
 
     // Metodos Establecer y Obtener

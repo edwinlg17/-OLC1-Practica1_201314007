@@ -46,8 +46,16 @@ public class NodoArbol {
         this.ant = ant;
     }
 
+    public void agrAnt(int num) {
+        ant.add(num);
+    }
+
     public void estSig(LinkedList<Integer> sig) {
         this.sig = sig;
+    }
+
+    public void agrSig(int num) {
+        sig.add(num);
     }
 
     public void estNun(int num) {
