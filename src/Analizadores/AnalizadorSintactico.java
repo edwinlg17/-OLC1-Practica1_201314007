@@ -109,13 +109,26 @@ public class AnalizadorSintactico {
 
     private void est6() {
         if (tk.obtTok().equals("tk_com")) {
+            con.estDes("lis");
             sigIte();
             est7();
         } else if (tk.obtTok().equals("tk_til")) {
+            con.estDes("ran");
             sigIte();
             est9();
         } else if (tk.obtTok().equals("tk_punCom")) {
-            lisCon.add(con);
+            if (con.obtDes().equals("ran")) {
+                LinkedList<Token> le = con.obtEle();
+                Token ti = le.getFirst();
+                Token tf = le.getLast();
+                if (ti.obtLex().length() == 1 & tf.obtLex().length() == 1) {
+                    if (ti.obtLex().charAt(0) < tf.obtLex().charAt(0) ) {
+                        lisCon.add(con);
+                    }
+                }
+            }else{
+                lisCon.add(con);
+            }
             sigIte();
             est0();
         } else {
@@ -137,10 +150,22 @@ public class AnalizadorSintactico {
 
     private void est8() {
         if (tk.obtTok().equals("tk_com")) {
+            con.estDes("lis");
             sigIte();
             est7();
         } else if (tk.obtTok().equals("tk_punCom")) {
-            lisCon.add(con);
+            if (con.obtDes().equals("ran")) {
+                LinkedList<Token> le = con.obtEle();
+                Token ti = le.getFirst();
+                Token tf = le.getLast();
+                if (ti.obtLex().length() == 1 & tf.obtLex().length() == 1) {
+                    if (ti.obtLex().charAt(0) < tf.obtLex().charAt(0) ) {
+                        lisCon.add(con);
+                    }
+                }
+            }else{
+                lisCon.add(con);
+            }
             if (ite.hasNext()) {
                 tk = (Token) ite.next();
             }
@@ -164,7 +189,18 @@ public class AnalizadorSintactico {
 
     private void est10() {
         if (tk.obtTok().equals("tk_punCom")) {
-            lisCon.add(con);
+            if (con.obtDes().equals("ran")) {
+                LinkedList<Token> le = con.obtEle();
+                Token ti = le.getFirst();
+                Token tf = le.getLast();
+                if (ti.obtLex().length() == 1 & tf.obtLex().length() == 1) {
+                    if (ti.obtLex().charAt(0) < tf.obtLex().charAt(0) ) {
+                        lisCon.add(con);
+                    }
+                }
+            }else{
+                lisCon.add(con);
+            }
             sigIte();
             est0();
         } else {

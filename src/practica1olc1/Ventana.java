@@ -3,6 +3,7 @@ package practica1olc1;
 import Analizadores.Token;
 import Analizadores.AnalizadorLexico;
 import Analizadores.AnalizadorSintactico;
+import Analizadores.Arbol;
 import Analizadores.Cadena;
 import Analizadores.Conjunto;
 import java.awt.GridBagConstraints;
@@ -276,7 +277,7 @@ public class Ventana extends JFrame {
     }
 
     private void accionBotonGenerarXML(ActionEvent evt) {
-       
+
     }
 
     // METODOS BOTONES Entrada
@@ -287,25 +288,34 @@ public class Ventana extends JFrame {
         AnalizadorSintactico as = new AnalizadorSintactico();
         as.analizar(al.obtenerTokens());
 
-        System.out.println("/////////// Inicio Analisis");
-        LinkedList<Token> le = as.obtLisErr();
-        for(Token t: le){
-            System.out.println(t.obtDes() + " fil: " + t.obtFil() + " col: " + t.obtCol());
+        String err = "//////////// INICIO ANALISIS ////////////\n";
+
+        LinkedList<Token> lt = al.obtenerErrores();
+        for (Token t : lt) {
+            err += "ERROR LEXICO: " + " lex: " + t.obtLex() + " fil: " + t.obtFil() + " col: " + t.obtCol() + " " + t.obtDes() + "\n";
         }
-        
+
+        LinkedList<Token> le = as.obtLisErr();
+        for (Token t : le) {
+            err += "ERROR SINTACTICO: " + " fil: " + t.obtFil() + " col: " + t.obtCol() + " " + t.obtDes() + "\n";
+        }
+
+        err += "//////////// FIN ANALISIS ////////////\n";
+
+        jtaSal.setText(err);
+
+        System.out.println("/////////// Inicio Analisis");
+
 //        LinkedList<Cadena> lc = as.obtLisCad();
 //        
 //        for (Cadena c: lc) {
 //            System.out.println(c.obtNom() + " - " + c.obtCad().obtLex());
 //        }
-        
 //        LinkedList<Arbol> le = as.obtLisExp();
 //        
 //        for (Arbol t: le) {
-//            System.out.println("");
 //            t.impArb();
 //        }
-        
 //        LinkedList<Conjunto> lc = as.obtLisCon();
 //        for(Conjunto c: lc){
 //            System.out.println(c.obtNom());
@@ -314,12 +324,6 @@ public class Ventana extends JFrame {
 //            }
 //            System.out.println("");
 //        }
-
-//        LinkedList<Token> lt = al.obtenerErrores();
-//        for(Token t: lt){
-//            System.out.println(t.obtDes() + " lex:" + t.obtLex() + " fil: " + t.obtFil() + " col: " + t.obtCol());
-//        }
-        
         System.out.println("/////////// Fin Analisis");
     }
 
