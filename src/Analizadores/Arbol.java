@@ -46,6 +46,22 @@ public class Arbol {
         }
     }
 
+    public void analizar() {
+        lisSig = new LinkedList<>();
+        lisTra = new LinkedList<>();
+        tra = new Transicion("", new LinkedList<>());
+        ind = 1;
+        anaArb(raiz);
+        genTabSig(raiz);
+        genTabTra();
+
+        System.out.println("///////");
+        obtCodTabSig();
+        System.out.println("///////");
+        obtCodTabTra();
+    }
+
+    //////////////// Aanlisis Arbol
     // Metodo Analizar Arbol
     private void anaArb(NodoArbol nt) {
         if (nt != null) {
@@ -121,14 +137,17 @@ public class Arbol {
         }
     }
 
-    // Otros Metodo de Analizar Arbol
+    // Metodo que combina los siguientes
     private LinkedList<Integer> agrAntSig(LinkedList<Integer> la, LinkedList<Integer> ls) {
         for (Integer i : ls) {
-            la.add(i);
+            if (!la.contains(i)) {
+                la.add(i);
+            }
         }
         return la;
     }
 
+    //////////////// Analisis Tabla Siguientes
     // Metodo Generar Tabla de Siguientes
     private void genTabSig(NodoArbol nt) {
         if (nt != null) {
@@ -164,32 +183,23 @@ public class Arbol {
         }
     }
 
+    //////////////// Analisis Tabla de Transiciones
     // Metodo Generar Tabla Transiciones
     private void genTabTra() {
-        lisSig = new LinkedList<>();
-        lisTra = new LinkedList<>();
-        tra = new Transicion("", new LinkedList<>());
-        ind = 1;
-        anaArb(raiz);
-        genTabSig(raiz);
-        genTabTra2();
-    }
-
-    private void genTabTra2() {
         ind = 0;
         lisTra.add(tra);
         lisTra.add(new Transicion("S" + ind++, raiz.obtAnt(), genEspTra()));
 
         LinkedList<Integer> con;
-        // ciclo transicion
+        // ciclo que recorre las transiciones
         for (int i = 1; i < lisTra.size(); i++) {
             con = lisTra.get(i).obtCon();
             LinkedList<Integer> rep;
-            // ciclo recorre conjunto
+            // ciclo que recorre el conjunto de la transicion
             for (int j = 0; j < con.size(); j++) {
                 rep = new LinkedList<>();
                 rep.add(con.get(j));
-                // ciclo recorre conjunto para duplicidad
+                // ciclo que busca duplisidad en el conjunto
                 for (int k = 0; k < con.size(); k++) {
                     if (!con.get(j).equals(con.get(k))) {
                         if (busSim(con.get(j)).equals(busSim(con.get(k)))) {
@@ -198,6 +208,7 @@ public class Arbol {
                     }
                 }
 
+                // ciclo que combina conjuntos
                 LinkedList<Integer> nc = new LinkedList<>();
                 for (Integer r : rep) {
                     LinkedList<Integer> ct = obtConSig(r);
@@ -208,37 +219,29 @@ public class Arbol {
                     }
                 }
 
-                int pos = verEst(nc);
-                if (pos == -1) {
-                    if (!nc.isEmpty()) {
-                        int p = obtPos(busSim(rep.get(0)));
-                        if (p != -1) {
-                            lisTra.get(i).obtTra().set(p, "S" + ind);
-                        }
-                        lisTra.add(new Transicion("S" + ind++, nc, genEspTra()));
-                    }
-                } else {
-                    int p = obtPos(busSim(rep.get(0)));
-                    if (p != -1) {
-                        lisTra.get(i).obtTra().set(p, lisTra.get(pos).obtNom());
-                    }
+                // creo la nueva transicion si no existe
+                int pt = obtPosTran(nc);
+                if (pt == -1 && !nc.isEmpty()) {
+                    lisTra.add(new Transicion("S" + ind++, nc, genEspTra()));
+                }
+
+                // inserto la transicion con el simbolo
+                pt = obtPosTran(nc);
+                int ps = obtPosSim(busSim(rep.get(0)));
+                if (pt != -1 & ps != -1) {
+                    lisTra.get(i).obtTra().set(ps, lisTra.get(pt).obtNom());
                 }
             }
         }
 
-        System.out.println("\t\t\t\t" + lisTra.get(0).obtTra());
-        for (int i = 1; i < lisTra.size(); i++) {
-            System.out.println(lisTra.get(i).obtNom() + " - \t" + lisTra.get(i).obtCon() + " - \t\t\t" + lisTra.get(i).obtTra());
-        }
-//        LinkedList<String> lt = tra.obtTra();
-//        for (String s : tra.obtTra()) {
-//            System.out.print(s + " - ");
+//        System.out.println("\t\t\t\t" + lisTra.get(0).obtTra());
+//        for (int i = 1; i < lisTra.size(); i++) {
+//            System.out.println(lisTra.get(i).obtNom() + " - \t" + lisTra.get(i).obtCon() + " - \t\t\t" + lisTra.get(i).obtTra());
 //        }
-//        System.out.println("");
     }
 
     // obtiene posicion transicion
-    private int obtPos(String sim) {
+    private int obtPosSim(String sim) {
         LinkedList<String> ls = lisTra.get(0).obtTra();
         for (int i = 0; i < ls.size(); i++) {
             if (sim.equals(ls.get(i))) {
@@ -258,8 +261,8 @@ public class Arbol {
         return new LinkedList<>();
     }
 
-    // verifica si el estado ya existe
-    private int verEst(LinkedList<Integer> rep) {
+    // verifica si el Transicion ya existe
+    private int obtPosTran(LinkedList<Integer> rep) {
         int r;
         LinkedList<Integer> con;
         for (int i = 1; i < lisTra.size(); i++) {
@@ -298,31 +301,9 @@ public class Arbol {
     private LinkedList<String> genEspTra() {
         LinkedList<String> ll = new LinkedList<>();
         for (String s : tra.obtTra()) {
-            ll.add("  ");
+            ll.add("");
         }
         return ll;
-    }
-
-    // Metodo Imprimir Arbol
-    public void impArb() {
-        System.out.println("//////////////");
-        genTabTra();
-//        System.out.println("//////////////");
-//        obtCodArb();
-//        System.out.println("//////////////");
-//        obtCodTabSig();
-    }
-
-    public void impArb(NodoArbol nt) {
-        if (nt != null) {
-            System.out.println(nt.obtSim().obtTok() + " anu: " + nt.obtAnu());
-            if (nt.izq != null) {
-                impArb(nt.izq);
-            }
-            if (nt.der != null) {
-                impArb(nt.der);
-            }
-        }
     }
 
     //////////////// Metodos de Generacion de Codigo
@@ -365,7 +346,7 @@ public class Arbol {
 
     // Metodo obtener codigo tabla Siguientes
     private void obtCodTabSig() {
-        System.out.println("//////////////////");
+        System.out.println("////////////////// Tabla de Siguientes");
         String cod = "<TR>\n\t<TD COLSPAN=\"3\">Tabla de Siguientes</TD>\n</TR>\n";
         cod += "<TR>\n\t<TD>#</TD>\n\t<TD>Simbolo</TD>\n\t<TD>Siguientes</TD>\n</TR>\n";
         for (Siguiente s : lisSig) {
@@ -381,6 +362,50 @@ public class Arbol {
                 }
             }
             cod += "</TD>\n";
+            cod += "</TR>\n";
+        }
+        System.out.println(cod);
+        System.out.println("//////////////////");
+    }
+
+    // Metodo obtener codigo tabla de Transiciones
+    private void obtCodTabTra() {
+        System.out.println("////////////////// Tabla Transiciones");
+        int a = lisTra.get(0).obtTra().size() + 1; // titulo
+        int b = lisTra.get(0).obtTra().size(); // titulo terminales
+        String cod = "<TR>\n\t<TD COLSPAN=\"" + a + "\">Tabla de Transiciones</TD>\n</TR>\n";
+        cod += "<TR>\n\t<TD ROWSPAN=\"2\">Estados</TD>\n\t<TD COLSPAN=\"" + b + "\">Terminales</TD>\n</TR>\n";
+
+        cod += "<TR>\n";
+        for (int j = 0; j < lisTra.get(0).obtTra().size(); j++) {
+            String t = lisTra.get(0).obtTra().get(j);
+            if (!t.equals("")) {
+                cod += "\t<TD>" + lisTra.get(0).obtTra().get(j) + "</TD>\n";
+            }
+        }
+        cod += "</TR>\n";
+
+        for (int i = 1; i < lisTra.size(); i++) {
+            cod += "<TR>\n";
+            // estado
+            cod += "\t<TD>" + lisTra.get(i).obtNom() + " = {";
+            for (int j = 0; j < lisTra.get(i).obtCon().size(); j++) {
+                cod += lisTra.get(i).obtCon().get(j);
+                if (j < lisTra.get(i).obtCon().size() - 1) {
+                    cod += ", ";
+                }
+            }
+            cod += "}</TD>\n";
+            // transiciones
+            for (int j = 0; j < lisTra.get(i).obtTra().size(); j++) {
+                String t = lisTra.get(i).obtTra().get(j);
+                if (!t.equals("")) {
+                    cod += "\t<TD>" + lisTra.get(i).obtTra().get(j) + "</TD>\n";
+                } else {
+                    cod += "\t<TD>--</TD>\n";
+                }
+            }
+
             cod += "</TR>\n";
         }
         System.out.println(cod);

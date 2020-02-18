@@ -315,7 +315,7 @@ public class Ventana extends JFrame {
         LinkedList<Arbol> lex = as.obtLisExp();
         
         for (Arbol t: lex) {
-            t.impArb();
+            t.analizar();
         }
         
 //        LinkedList<Conjunto> lc = as.obtLisCon();
