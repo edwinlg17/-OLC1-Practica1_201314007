@@ -16,8 +16,13 @@ public class Transicion {
         this.tra = new LinkedList<>();
     }
 
-    //////////////// METODOS
+    public Transicion(String nom, LinkedList<Integer> con, LinkedList<String> tra) {
+        this.nom = nom;
+        this.con = con;
+        this.tra = tra;
+    }
 
+    //////////////// METODOS
     // Metodo Obtener
     public String obtNom() {
         return nom;
@@ -43,11 +48,11 @@ public class Transicion {
     public void estTra(LinkedList<String> tra) {
         this.tra = tra;
     }
-    
-    public void agrTer(String ter){
-        if (!tra.isEmpty() & !tra.contains(ter)) {
+
+    public void agrTer(String ter) {
+        if (!tra.contains(ter) && !ter.equals("#")) {
             tra.add(ter);
         }
     }
-    
+
 }

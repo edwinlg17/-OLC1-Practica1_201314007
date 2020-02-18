@@ -8,12 +8,15 @@ public class Arbol {
     //////////////// ATRIBUTOS
     private NodoArbol raiz;
     private LinkedList<Siguiente> lisSig;
+    private LinkedList<Transicion> lisTra;
+    private Transicion tra;
     private String nom;
     private int ind;
 
     //////////////// CONSTRUCTOR
     public Arbol(String nom) {
         this.lisSig = new LinkedList<>();
+        this.lisTra = new LinkedList<>();
         this.nom = nom;
         this.raiz = null;
     }
@@ -65,6 +68,7 @@ public class Arbol {
             // Anulable para hoja
             if (hoj) {
                 lisSig.add(new Siguiente(nt));
+                tra.agrTer(nt.obtSim().obtLex());
                 nt.agrAnt(ind);
                 nt.agrSig(ind);
                 nt.estNun(ind++);
@@ -126,32 +130,6 @@ public class Arbol {
     }
 
     // Metodo Generar Tabla de Siguientes
-    private void genTabSig() {
-        lisSig = new LinkedList<>();
-        ind = 1;
-        anaArb(raiz);
-        genTabSig(raiz);
-        
-        String cod = "<TR>\n\t<TD COLSPAN=\"3\">Tabla de Siguientes</TD>\n</TR>\n";
-        cod += "<TR>\n\t<TD>#</TD>\n\t<TD>Simbolo</TD>\n\t<TD>Siguientes</TD>\n</TR>\n";
-        for (Siguiente s : lisSig) {
-            cod += "<TR>\n";
-            cod += "\t<TD>" + s.obtSim().obtNum() + "</TD>\n";
-            cod += "\t<TD>" + s.obtSim().obtSim().obtLex() + "</TD>\n";
-            cod += "\t<TD>";
-            Collections.sort(s.obtLisSig());
-            for (int i = 0; i < s.obtLisSig().size(); i++) {
-                cod += s.obtLisSig().get(i);
-                if (i < s.obtLisSig().size() - 1) {
-                    cod += ", ";
-                }
-            }
-            cod += "</TD>\n";
-            cod += "</TR>\n";
-        }
-        System.out.println(cod);
-    }
-
     private void genTabSig(NodoArbol nt) {
         if (nt != null) {
             if (nt.obtSim().obtTok().equals("tk_pun")) {
@@ -185,13 +163,154 @@ public class Arbol {
             }
         }
     }
-    
+
+    // Metodo Generar Tabla Transiciones
+    private void genTabTra() {
+        lisSig = new LinkedList<>();
+        lisTra = new LinkedList<>();
+        tra = new Transicion("", new LinkedList<>());
+        ind = 1;
+        anaArb(raiz);
+        genTabSig(raiz);
+        genTabTra2();
+    }
+
+    private void genTabTra2() {
+        ind = 0;
+        lisTra.add(tra);
+        lisTra.add(new Transicion("S" + ind++, raiz.obtAnt(), genEspTra()));
+
+        LinkedList<Integer> con;
+        // ciclo transicion
+        for (int i = 1; i < lisTra.size(); i++) {
+            con = lisTra.get(i).obtCon();
+            LinkedList<Integer> rep;
+            // ciclo recorre conjunto
+            for (int j = 0; j < con.size(); j++) {
+                rep = new LinkedList<>();
+                rep.add(con.get(j));
+                // ciclo recorre conjunto para duplicidad
+                for (int k = 0; k < con.size(); k++) {
+                    if (!con.get(j).equals(con.get(k))) {
+                        if (busSim(con.get(j)).equals(busSim(con.get(k)))) {
+                            rep.add(con.get(k));
+                        }
+                    }
+                }
+
+                LinkedList<Integer> nc = new LinkedList<>();
+                for (Integer r : rep) {
+                    LinkedList<Integer> ct = obtConSig(r);
+                    for (Integer e : ct) {
+                        if (!nc.contains(e)) {
+                            nc.add(e);
+                        }
+                    }
+                }
+
+                int pos = verEst(nc);
+                if (pos == -1) {
+                    if (!nc.isEmpty()) {
+                        int p = obtPos(busSim(rep.get(0)));
+                        if (p != -1) {
+                            lisTra.get(i).obtTra().set(p, "S" + ind);
+                        }
+                        lisTra.add(new Transicion("S" + ind++, nc, genEspTra()));
+                    }
+                } else {
+                    int p = obtPos(busSim(rep.get(0)));
+                    if (p != -1) {
+                        lisTra.get(i).obtTra().set(p, lisTra.get(pos).obtNom());
+                    }
+                }
+            }
+        }
+
+        System.out.println("\t\t\t\t" + lisTra.get(0).obtTra());
+        for (int i = 1; i < lisTra.size(); i++) {
+            System.out.println(lisTra.get(i).obtNom() + " - \t" + lisTra.get(i).obtCon() + " - \t\t\t" + lisTra.get(i).obtTra());
+        }
+//        LinkedList<String> lt = tra.obtTra();
+//        for (String s : tra.obtTra()) {
+//            System.out.print(s + " - ");
+//        }
+//        System.out.println("");
+    }
+
+    // obtiene posicion transicion
+    private int obtPos(String sim) {
+        LinkedList<String> ls = lisTra.get(0).obtTra();
+        for (int i = 0; i < ls.size(); i++) {
+            if (sim.equals(ls.get(i))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // obtiene el conjunto de sig
+    private LinkedList<Integer> obtConSig(Integer num) {
+        for (Siguiente s : lisSig) {
+            if (num.equals(s.obtSim().obtNum())) {
+                return s.obtLisSig();
+            }
+        }
+        return new LinkedList<>();
+    }
+
+    // verifica si el estado ya existe
+    private int verEst(LinkedList<Integer> rep) {
+        int r;
+        LinkedList<Integer> con;
+        for (int i = 1; i < lisTra.size(); i++) {
+            con = lisTra.get(i).obtCon();
+            if (con.size() == rep.size()) {
+                Collections.sort(con);
+                Collections.sort(rep);
+                r = i;
+                for (int j = 0; j < con.size(); j++) {
+                    if (!con.get(j).equals(rep.get(j))) {
+                        r = -1;
+                    }
+                }
+
+                if (r != -1) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+
+    }
+
+    // obtiene el simbolo a partir del numero
+    private String busSim(Integer num) {
+        String sim = "";
+        for (Siguiente s : lisSig) {
+            if (s.obtSim().obtNum() == num) {
+                return s.obtSim().obtSim().obtLex();
+            }
+        }
+        return sim;
+    }
+
+    // genera una lista con los espacios para las transiciones
+    private LinkedList<String> genEspTra() {
+        LinkedList<String> ll = new LinkedList<>();
+        for (String s : tra.obtTra()) {
+            ll.add("  ");
+        }
+        return ll;
+    }
 
     // Metodo Imprimir Arbol
     public void impArb() {
-        genTabSig();
-        System.out.println("///////////\n");
-        //obtCodArb();
+        System.out.println("//////////////");
+        genTabTra();
+//        System.out.println("//////////////");
+//        obtCodArb();
+//        System.out.println("//////////////");
+//        obtCodTabSig();
     }
 
     public void impArb(NodoArbol nt) {
@@ -206,9 +325,10 @@ public class Arbol {
         }
     }
 
-    // Metodo obtCodArb
+    //////////////// Metodos de Generacion de Codigo
+    // Metodo obtener codigo arbol
     public void obtCodArb() {
-        ind = 0;
+        ind = 1;
         System.out.println(ind + "[label=\"" + raiz.obtSim().obtLex().replace("\"", "\\\"") + "\"];");
         if (raiz.obtNum() != -1) {
             System.out.println(ind + ":s->" + ind + ":s[color=transparent, taillabel = <<font color=\"green\">" + raiz.obtNum() + "</font>>];");
@@ -241,6 +361,30 @@ public class Arbol {
                 obtCodArb(nt.der);
             }
         }
+    }
+
+    // Metodo obtener codigo tabla Siguientes
+    private void obtCodTabSig() {
+        System.out.println("//////////////////");
+        String cod = "<TR>\n\t<TD COLSPAN=\"3\">Tabla de Siguientes</TD>\n</TR>\n";
+        cod += "<TR>\n\t<TD>#</TD>\n\t<TD>Simbolo</TD>\n\t<TD>Siguientes</TD>\n</TR>\n";
+        for (Siguiente s : lisSig) {
+            cod += "<TR>\n";
+            cod += "\t<TD>" + s.obtSim().obtNum() + "</TD>\n";
+            cod += "\t<TD>" + s.obtSim().obtSim().obtLex() + "</TD>\n";
+            cod += "\t<TD>";
+            Collections.sort(s.obtLisSig());
+            for (int i = 0; i < s.obtLisSig().size(); i++) {
+                cod += s.obtLisSig().get(i);
+                if (i < s.obtLisSig().size() - 1) {
+                    cod += ", ";
+                }
+            }
+            cod += "</TD>\n";
+            cod += "</TR>\n";
+        }
+        System.out.println(cod);
+        System.out.println("//////////////////");
     }
 
     // Otros Metodos de obtCodArb
