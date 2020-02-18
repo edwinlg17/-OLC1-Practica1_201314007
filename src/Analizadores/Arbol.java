@@ -59,6 +59,8 @@ public class Arbol {
         obtCodTabSig();
         System.out.println("///////");
         obtCodTabTra();
+        System.out.println("///////");
+        obtCodAut();
     }
 
     //////////////// Aanlisis Arbol
@@ -344,6 +346,18 @@ public class Arbol {
         }
     }
 
+    //Otros Metodos de codigo arbol
+    private String obtLisSigAnt(LinkedList<Integer> lis) {
+        String cad = "";
+        for (int i = 0; i < lis.size(); i++) {
+            cad += lis.get(i);
+            if (i < lis.size() - 1) {
+                cad += ", ";
+            }
+        }
+        return cad;
+    }
+
     // Metodo obtener codigo tabla Siguientes
     private void obtCodTabSig() {
         System.out.println("////////////////// Tabla de Siguientes");
@@ -352,7 +366,15 @@ public class Arbol {
         for (Siguiente s : lisSig) {
             cod += "<TR>\n";
             cod += "\t<TD>" + s.obtSim().obtNum() + "</TD>\n";
-            cod += "\t<TD>" + s.obtSim().obtSim().obtLex() + "</TD>\n";
+            if (s.obtSim().obtSim().obtLex().contains("<")) {
+                cod += "\t<TD>&lt;</TD>\n";
+            } else if (s.obtSim().obtSim().obtLex().contains(">")) {
+                cod += "\t<TD>&gt;</TD>\n";
+            } else if (s.obtSim().obtSim().obtLex().contains("&")) {
+                cod += "\t<TD>&amp;</TD>\n";
+            } else {
+                cod += "\t<TD>" + s.obtSim().obtSim().obtLex() + "</TD>\n";
+            }
             cod += "\t<TD>";
             Collections.sort(s.obtLisSig());
             for (int i = 0; i < s.obtLisSig().size(); i++) {
@@ -380,7 +402,16 @@ public class Arbol {
         for (int j = 0; j < lisTra.get(0).obtTra().size(); j++) {
             String t = lisTra.get(0).obtTra().get(j);
             if (!t.equals("")) {
-                cod += "\t<TD>" + lisTra.get(0).obtTra().get(j) + "</TD>\n";
+                if (lisTra.get(0).obtTra().get(j).contains("<")) {
+                    cod += "\t<TD>&lt;</TD>\n";
+                } else if (lisTra.get(0).obtTra().get(j).contains(">")) {
+                    cod += "\t<TD>&gt;</TD>\n";
+                } else if (lisTra.get(0).obtTra().get(j).contains("&")) {
+                    cod += "\t<TD>&amp;</TD>\n";
+                } else {
+                    cod += "\t<TD>" + lisTra.get(0).obtTra().get(j) + "</TD>\n";
+                }
+
             }
         }
         cod += "</TR>\n";
@@ -388,7 +419,14 @@ public class Arbol {
         for (int i = 1; i < lisTra.size(); i++) {
             cod += "<TR>\n";
             // estado
-            cod += "\t<TD>" + lisTra.get(i).obtNom() + " = {";
+            int u = lisTra.get(i).obtCon().getLast();
+
+            if (!busSim(u).equals("#")) {
+                cod += "\t<TD>" + lisTra.get(i).obtNom() + " = {";
+            } else {
+                cod += "\t<TD> * " + lisTra.get(i).obtNom() + " = {";
+            }
+
             for (int j = 0; j < lisTra.get(i).obtCon().size(); j++) {
                 cod += lisTra.get(i).obtCon().get(j);
                 if (j < lisTra.get(i).obtCon().size() - 1) {
@@ -412,18 +450,52 @@ public class Arbol {
         System.out.println("//////////////////");
     }
 
-    // Otros Metodos de obtCodArb
-    private String obtLisSigAnt(LinkedList<Integer> lis) {
-        String cad = "";
-        for (int i = 0; i < lis.size(); i++) {
-            cad += lis.get(i);
-            if (i < lis.size() - 1) {
-                cad += ", ";
+    // Metodo obtener codigo Automata
+    private void obtCodAut() {
+        System.out.println("////////////////// Automata");
+        String cod = "", tra = "", ran = "{rank=same S0 };\n";
+
+        for (int i = 1; i < lisTra.size(); i++) {
+
+            int u = lisTra.get(i).obtCon().getLast();
+            if (busSim(u).equals("#")) {
+                cod += lisTra.get(i).obtNom() + "[shape=doublecircle];\n";
             }
+
+            // codigo transiciones graphviz
+            for (String s : lisTra.get(i).obtTra()) {
+                if (!s.equals("") & !tra.contains(lisTra.get(i).obtNom() + "->" + s)) {
+                    String la = "";
+                    for (int j = 0; j < lisTra.get(i).obtTra().size(); j++) {
+                        if (s.equals(lisTra.get(i).obtTra().get(j))) {
+                            la += lisTra.get(0).obtTra().get(j) + " ";
+                        }
+                    }
+                    tra += lisTra.get(i).obtNom() + "->" + s + "[label=\"" + la.replace("\"", "") + "\"];\n";
+                }
+            }
+
+            // codigo de rank graphviz
+            String tr = "";
+            for (String s : lisTra.get(i).obtTra()) {
+                if (!ran.contains(s) & !tr.contains(s)) {
+                    tr += s + " ";
+                }
+            }
+            if (!tr.equals("")) {
+                ran += "{rank=same " + tr + "};\n";
+            }
+
         }
-        return cad;
+
+        System.out.println(ran);
+        System.out.println(tra);
+        System.out.println(cod);
+
+        System.out.println("//////////////////");
     }
 
+    //////////////// Otros metodos
     // Metodos Establecer y Obtener
     public void estNom(String nom) {
         this.nom = nom;
