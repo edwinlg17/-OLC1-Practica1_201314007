@@ -131,6 +131,7 @@ public class Arbol {
         ind = 1;
         anaArb(raiz);
         genTabSig(raiz);
+        
         String cod = "<TR>\n\t<TD COLSPAN=\"3\">Tabla de Siguientes</TD>\n</TR>\n";
         cod += "<TR>\n\t<TD>#</TD>\n\t<TD>Simbolo</TD>\n\t<TD>Siguientes</TD>\n</TR>\n";
         for (Siguiente s : lisSig) {
@@ -184,6 +185,7 @@ public class Arbol {
             }
         }
     }
+    
 
     // Metodo Imprimir Arbol
     public void impArb() {
