@@ -304,20 +304,13 @@ public class Ventana extends JFrame {
 
         jtaSal.setText(err);
 
-        System.out.println("/////////// Inicio Analisis");
-
 //        LinkedList<Cadena> lc = as.obtLisCad();
 //        
 //        for (Cadena c: lc) {
 //            System.out.println(c.obtNom() + " - " + c.obtCad().obtLex());
 //        }
 
-        LinkedList<Arbol> lex = as.obtLisExp();
-        
-        for (Arbol t: lex) {
-            t.analizar();
-        }
-        
+
 //        LinkedList<Conjunto> lc = as.obtLisCon();
 //        for(Conjunto c: lc){
 //            System.out.println(c.obtNom());
@@ -326,13 +319,22 @@ public class Ventana extends JFrame {
 //            }
 //            System.out.println("");
 //        }
-        System.out.println("/////////// Fin Analisis");
     }
 
     private void accionBotonGenerarAutomata(ActionEvent evt) {
-
         DefaultTreeModel dtm = new DefaultTreeModel(crearArbol());
         jtArb.setModel(dtm);
+        
+        AnalizadorLexico al = new AnalizadorLexico();
+        al.analizar(jtaEnt.getText());
+
+        AnalizadorSintactico as = new AnalizadorSintactico();
+        as.analizar(al.obtenerTokens());
+        
+        LinkedList<Arbol> lex = as.obtLisExp();
+        for (Arbol t : lex) {
+            t.generarGraficos();
+        }
     }
 
     // METODOS JARBOL
@@ -375,6 +377,7 @@ public class Ventana extends JFrame {
         File ds3 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Siguientes");
         File dt4 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Transiciones");
         File da5 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Automatas");
+        File da6 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Codigo");
 
         if (!dd1.exists()) {
             dd1.mkdir();
@@ -390,6 +393,9 @@ public class Ventana extends JFrame {
         }
         if (!da5.exists()) {
             da5.mkdir();
+        }
+        if (!da6.exists()) {
+            da6.mkdir();
         }
     }
 

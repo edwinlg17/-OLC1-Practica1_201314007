@@ -1,5 +1,8 @@
 package Analizadores;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -46,7 +49,9 @@ public class Arbol {
         }
     }
 
-    public void analizar() {
+    public void generarGraficos() {
+        File dd1 = new File(System.getProperty("user.home") + "/desktop/Diagramas");
+        dd1.delete();
         lisSig = new LinkedList<>();
         lisTra = new LinkedList<>();
         tra = new Transicion("", new LinkedList<>());
@@ -56,11 +61,18 @@ public class Arbol {
         genTabTra();
 
         System.out.println("///////");
+        obtCodArb();
+        System.out.println("///////");
         obtCodTabSig();
         System.out.println("///////");
         obtCodTabTra();
         System.out.println("///////");
         obtCodAut();
+
+        File da2 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Arboles");
+        File ds3 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Siguientes");
+        File dt4 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Transiciones");
+        File da5 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Automatas");
     }
 
     //////////////// Aanlisis Arbol
@@ -312,38 +324,49 @@ public class Arbol {
     // Metodo obtener codigo arbol
     public void obtCodArb() {
         ind = 1;
-        System.out.println(ind + "[label=\"" + raiz.obtSim().obtLex().replace("\"", "\\\"") + "\"];");
+        String cod = "graph [label=\"Arbol --  " + nom + "\", labelloc=t, fontsize=30]; ";
+        cod += ind + "[label=\"" + raiz.obtSim().obtLex().replace("\"", "\\\"") + "\"];\n";
         if (raiz.obtNum() != -1) {
-            System.out.println(ind + ":s->" + ind + ":s[color=transparent, taillabel = <<font color=\"green\">" + raiz.obtNum() + "</font>>];");
+            cod += ind + ":s->" + ind + ":s[color=transparent, taillabel = <<font color=\"green\">" + raiz.obtNum() + "</font>>];\n";
         }
-        obtCodArb(raiz);
+        cod = obtCodArb(raiz, cod);
+
+        cod = "digraph G {\n"
+                + "node[fixedsize=true, shape=circle];\n"
+                + "graph [nodesep=0.9];\n"
+                + "edge [dir=none];\n\n"
+                + cod
+                + "\n\n}";
+
+        creArc("arbTem_" + nom, System.getProperty("user.home") + "/desktop/Diagramas/Arboles/" + nom, cod);
     }
 
-    private void obtCodArb(NodoArbol nt) {
+    private String obtCodArb(NodoArbol nt, String cod) {
         if (nt != null) {
             String pad = String.valueOf(ind);
-            System.out.println(ind + ":n->" + ind + ":n[color=transparent, taillabel = <<font color=\"red\">" + nt.obtAnu() + "</font>>];");
+            cod += ind + ":n->" + ind + ":n[color=transparent, taillabel = <<font color=\"red\">" + nt.obtAnu() + "</font>>];\n";
             if (nt.obtNum() != -1) {
-                System.out.println(ind + ":s->" + ind + ":s[color=transparent, taillabel = <<font color=\"green\">" + nt.obtNum() + "</font>>];");
+                cod += ind + ":s->" + ind + ":s[color=transparent, taillabel = <<font color=\"green\">" + nt.obtNum() + "</font>>];\n";
             }
             if (!nt.obtAnt().isEmpty()) {
-                System.out.println(ind + ":w->" + ind + ":w[color=transparent, taillabel = <<font color=\"blue\">" + obtLisSigAnt(nt.obtAnt()) + "</font>>];");
+                cod += ind + ":w->" + ind + ":w[color=transparent, taillabel = <<font color=\"blue\">" + obtLisSigAnt(nt.obtAnt()) + "</font>>];\n";
             }
             if (!nt.obtSig().isEmpty()) {
-                System.out.println(ind + ":e->" + ind + ":e[color=transparent, taillabel = <<font color=\"orange\">" + obtLisSigAnt(nt.obtSig()) + "</font>>];");
+                cod += ind + ":e->" + ind + ":e[color=transparent, taillabel = <<font color=\"orange\">" + obtLisSigAnt(nt.obtSig()) + "</font>>];\n";
             }
 
             if (nt.izq != null) {
-                System.out.println(String.valueOf(++ind) + "[label=\"" + nt.izq.obtSim().obtLex().replace("\"", "\\\"") + "\"];");
-                System.out.println(pad + "->" + ind + ";");
-                obtCodArb(nt.izq);
+                cod += String.valueOf(++ind) + "[label=\"" + nt.izq.obtSim().obtLex().replace("\"", "\\\"") + "\"];\n";
+                cod += pad + "->" + ind + ";\n";
+                cod = obtCodArb(nt.izq, cod);
             }
             if (nt.der != null) {
-                System.out.println(String.valueOf(++ind) + "[label=\"" + nt.der.obtSim().obtLex().replace("\"", "\\\"") + "\"];");
-                System.out.println(pad + "->" + ind + ";");
-                obtCodArb(nt.der);
+                cod += String.valueOf(++ind) + "[label=\"" + nt.der.obtSim().obtLex().replace("\"", "\\\"") + "\"];\n";
+                cod += pad + "->" + ind + ";\n";
+                cod = obtCodArb(nt.der, cod);
             }
         }
+        return cod;
     }
 
     //Otros Metodos de codigo arbol
@@ -360,8 +383,7 @@ public class Arbol {
 
     // Metodo obtener codigo tabla Siguientes
     private void obtCodTabSig() {
-        System.out.println("////////////////// Tabla de Siguientes");
-        String cod = "<TR>\n\t<TD COLSPAN=\"3\">Tabla de Siguientes</TD>\n</TR>\n";
+        String cod = "<TR>\n\t<TD COLSPAN=\"3\">Tabla de Siguientes -- " + nom + "</TD>\n</TR>\n";
         cod += "<TR>\n\t<TD>#</TD>\n\t<TD>Simbolo</TD>\n\t<TD>Siguientes</TD>\n</TR>\n";
         for (Siguiente s : lisSig) {
             cod += "<TR>\n";
@@ -386,16 +408,23 @@ public class Arbol {
             cod += "</TD>\n";
             cod += "</TR>\n";
         }
-        System.out.println(cod);
-        System.out.println("//////////////////");
+
+        cod = "digraph G {\n"
+                + "node [shape=plaintext];\n"
+                + "tabla[label=<\n"
+                + "<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\">\n"
+                + cod
+                + "</TABLE>>];\n"
+                + "\n\n}";
+
+        creArc("sigTem_" + nom, System.getProperty("user.home") + "/desktop/Diagramas/Siguientes/" + nom, cod);
     }
 
     // Metodo obtener codigo tabla de Transiciones
     private void obtCodTabTra() {
-        System.out.println("////////////////// Tabla Transiciones");
         int a = lisTra.get(0).obtTra().size() + 1; // titulo
         int b = lisTra.get(0).obtTra().size(); // titulo terminales
-        String cod = "<TR>\n\t<TD COLSPAN=\"" + a + "\">Tabla de Transiciones</TD>\n</TR>\n";
+        String cod = "<TR>\n\t<TD COLSPAN=\"" + a + "\">Tabla de Transiciones -- " + nom + "</TD>\n</TR>\n";
         cod += "<TR>\n\t<TD ROWSPAN=\"2\">Estados</TD>\n\t<TD COLSPAN=\"" + b + "\">Terminales</TD>\n</TR>\n";
 
         cod += "<TR>\n";
@@ -411,7 +440,6 @@ public class Arbol {
                 } else {
                     cod += "\t<TD>" + lisTra.get(0).obtTra().get(j) + "</TD>\n";
                 }
-
             }
         }
         cod += "</TR>\n";
@@ -446,15 +474,27 @@ public class Arbol {
 
             cod += "</TR>\n";
         }
-        System.out.println(cod);
-        System.out.println("//////////////////");
+        
+        
+        cod = "digraph G {\n"
+                + "node [shape=plaintext];\n"
+                + "tabla[label=<\n"
+                + "<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\">\n"
+                + cod
+                + "</TABLE>>];\n"
+                + "\n\n}";
+
+        creArc("traTem_" + nom, System.getProperty("user.home") + "/desktop/Diagramas/Transiciones/" + nom, cod);
+        
+//        System.out.println("////////////////// Tabla Transiciones");
+//        System.out.println(cod);
+//        System.out.println("//////////////////");
     }
 
     // Metodo obtener codigo Automata
     private void obtCodAut() {
-        System.out.println("////////////////// Automata");
-        String cod = "", tra = "", ran = "{rank=same S0 };\n";
-
+        String tra = "", ran = "{rank=same S0 };\n";
+        String cod = "graph [label=\"Automata --  " + nom + "\", labelloc=t, fontsize=30]; ";
         for (int i = 1; i < lisTra.size(); i++) {
 
             int u = lisTra.get(i).obtCon().getLast();
@@ -468,10 +508,12 @@ public class Arbol {
                     String la = "";
                     for (int j = 0; j < lisTra.get(i).obtTra().size(); j++) {
                         if (s.equals(lisTra.get(i).obtTra().get(j))) {
-                            la += lisTra.get(0).obtTra().get(j) + " ";
+                            la += lisTra.get(0).obtTra().get(j) + ", ";
                         }
                     }
-                    tra += lisTra.get(i).obtNom() + "->" + s + "[label=\"" + la.replace("\"", "") + "\"];\n";
+                    la = "[label=\"" + la.replace("\"", "\\\"") + "\"];\n";
+                    la = la.replace(", \"];", "\"];");
+                    tra += lisTra.get(i).obtNom() + "->" + s + la;
                 }
             }
 
@@ -488,11 +530,19 @@ public class Arbol {
 
         }
 
-        System.out.println(ran);
-        System.out.println(tra);
-        System.out.println(cod);
+        cod = "digraph G {\n"
+                + "node[fixedsize=true, shape=circle];\n"
+                + "graph [layout = dot, rankdir = LR, rank= same];\n"
+                + ran + tra + cod
+                + "\n\n}";
 
-        System.out.println("//////////////////");
+        creArc("autTem_" + nom, System.getProperty("user.home") + "/desktop/Diagramas/Automatas/" + nom, cod);
+        
+//        System.out.println("////////////////// Automata");
+//        System.out.println(ran);
+//        System.out.println(tra);
+//        System.out.println(cod);
+//        System.out.println("//////////////////");
     }
 
     //////////////// Otros metodos
@@ -505,4 +555,15 @@ public class Arbol {
         return nom;
     }
 
+    private void creArc(String nom, String rut, String tex) {
+        try {
+            String rt = System.getProperty("user.home") + "/desktop/Diagramas/Codigo/" + nom + ".dot";
+            BufferedWriter bw = new BufferedWriter(new FileWriter(new File(rt)));
+            bw.write(tex);
+            bw.close();
+
+            Process proceso = Runtime.getRuntime().exec("dot " + rt + " -o " + rut + ".png -Tpng -Gcharset=utf8");
+        } catch (Exception e) {
+        }
+    }
 }
