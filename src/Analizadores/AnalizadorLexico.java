@@ -31,7 +31,6 @@ public class AnalizadorLexico {
 
         while (ite < tex.length()) {
             char car = tex.charAt(ite);
-
             switch (est) {
                 ////////////////////////////////// estado 0
                 case 0:
@@ -74,7 +73,7 @@ public class AnalizadorLexico {
                     else if (verSimbolo(car)) {
                         est = 0;
                         lex += car;
-                        lisTok.add(new Token(verTkSim(lex), lex, fil, col));
+                        lisTok.add(new Token(verTkSim(String.valueOf(lex)), lex, fil, col));
                         col++;
                         lex = "";
                     } // Caracteres Omitibles
@@ -92,7 +91,6 @@ public class AnalizadorLexico {
                         cl = col;
                         fl = fil;
                         lisErr.add(new Token("Caracter Desconocido", lex, fl, cl, "Caracter Desconocido"));
-                        //System.out.println("ERROR LEXICO: " + car + " - " + fl + " - " + cl);
                         lex = "";
                         col++;
                     }
@@ -152,10 +150,7 @@ public class AnalizadorLexico {
                         col++;
                     } else {
                         est = 0;
-                        lex += car;
-                        ite++;
-                        col++;
-                        //System.out.println("ERROR SINTACTICO:" + lex + " - " + fl + " - " + cl);
+                        lisTok.add(new Token(verTkSim(String.valueOf(lex)), lex, fl, fl));
                         lex = "";
                     }
                     break;

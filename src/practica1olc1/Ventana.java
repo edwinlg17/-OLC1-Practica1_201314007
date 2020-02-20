@@ -292,49 +292,63 @@ public class Ventana extends JFrame {
 
         LinkedList<Token> lt = al.obtenerErrores();
         for (Token t : lt) {
-            err += "ERROR LEXICO: " + " lex: " + t.obtLex() + " fil: " + t.obtFil() + " col: " + t.obtCol() + " " + t.obtDes() + "\n";
+            err += "ERROR LEXICO: lex: " + t.obtLex() + " fil: " + t.obtFil() + " col: " + t.obtCol() + " " + t.obtDes() + "\n";
         }
 
         LinkedList<Token> le = as.obtLisErr();
         for (Token t : le) {
-            err += "ERROR SINTACTICO: " + " fil: " + t.obtFil() + " col: " + t.obtCol() + " " + t.obtDes() + "\n";
+            err += "ERROR SINTACTICO: lex: " + t.obtLex() + " fil: " + t.obtFil() + " col: " + t.obtCol() + " " + t.obtDes() + "\n";
         }
 
         err += "//////////// FIN ANALISIS ////////////\n";
 
         jtaSal.setText(err);
 
+        as.obtLisCon();
+
+
 //        LinkedList<Cadena> lc = as.obtLisCad();
 //        
 //        for (Cadena c: lc) {
 //            System.out.println(c.obtNom() + " - " + c.obtCad().obtLex());
 //        }
-
-
-//        LinkedList<Conjunto> lc = as.obtLisCon();
-//        for(Conjunto c: lc){
-//            System.out.println(c.obtNom());
-//            for(Token t: c.obtEle()){
-//                System.out.print(t.obtLex()+ " ");
-//            }
-//            System.out.println("");
-//        }
     }
 
     private void accionBotonGenerarAutomata(ActionEvent evt) {
-        DefaultTreeModel dtm = new DefaultTreeModel(crearArbol());
-        jtArb.setModel(dtm);
-        
-        AnalizadorLexico al = new AnalizadorLexico();
-        al.analizar(jtaEnt.getText());
+        Thread hilo = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                borDir(new File(System.getProperty("user.home") + "/desktop/Diagramas"));
 
-        AnalizadorSintactico as = new AnalizadorSintactico();
-        as.analizar(al.obtenerTokens());
-        
-        LinkedList<Arbol> lex = as.obtLisExp();
-        for (Arbol t : lex) {
-            t.generarGraficos();
-        }
+                DefaultTreeModel dtm = new DefaultTreeModel(crearArbol());
+                jtArb.setModel(dtm);
+
+                try {
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                }
+
+                AnalizadorLexico al = new AnalizadorLexico();
+                al.analizar(jtaEnt.getText());
+
+                AnalizadorSintactico as = new AnalizadorSintactico();
+                as.analizar(al.obtenerTokens());
+
+                LinkedList<Arbol> lex = as.obtLisExp();
+                for (Arbol t : lex) {
+                    t.generarGraficos();
+                }
+
+                try {
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                }
+
+                dtm = new DefaultTreeModel(crearArbol());
+                jtArb.setModel(dtm);
+            }
+        });
+        hilo.start();
     }
 
     // METODOS JARBOL
@@ -467,7 +481,7 @@ public class Ventana extends JFrame {
             fr.close();
         } catch (Exception e) {
         }
-        tex = tex.toLowerCase();
+//        tex = tex.toLowerCase();
         return tex;
     }
 
@@ -496,5 +510,18 @@ public class Ventana extends JFrame {
             }
             guardarArchivo();
         }
+    }
+
+    private void borDir(File fic) {
+        if (!fic.exists()) {
+            return;
+        }
+
+        if (fic.isDirectory()) {
+            for (File f : fic.listFiles()) {
+                borDir(f);
+            }
+        }
+        fic.delete();
     }
 }

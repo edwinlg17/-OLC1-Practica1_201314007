@@ -30,13 +30,13 @@ public class AnalizadorSintactico {
         ite = lisTok.listIterator();
         con = new Conjunto();
         tk = new Token();
-
+        
         if (ite.hasNext()) {
             tk = (Token) ite.next();
             est0();
         }
     }
-
+    
     private void est0() {
         con = new Conjunto();
         if (tk.obtTok().equals("tk_con")) {
@@ -48,10 +48,14 @@ public class AnalizadorSintactico {
             cad = new Cadena(tk.obtLex());
             sigIte();
             est11();
-        } else if (tk.obtTok().equals("")) {
-        } else {
+        } else if (tk.obtTok().equals("tk_llaAbr") || tk.obtTok().equals("tk_llaCie") || tk.obtTok().equals("tk_por")) {
             sigIte();
             est0();
+        } else if (tk.obtTok().equals("")) {
+            // archivo vacio
+        } else {
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), " No especificado");
+            estE(e);
         }
     }
 
@@ -65,7 +69,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-
+    
     private void est2() {
         if (tk.obtTok().equals("tk_id")) {
             con.estNom(tk.obtLex());
@@ -76,7 +80,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-
+    
     private void est3() {
         if (tk.obtTok().equals("tk_gui")) {
             sigIte();
@@ -86,7 +90,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-
+    
     private void est4() {
         if (tk.obtTok().equals("tk_may")) {
             sigIte();
@@ -96,18 +100,19 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-
+    
     private void est5() {
-        if (tk.obtTok().equals("tk_let") | tk.obtTok().equals("tk_numero")) {
+        //| tk.obtTok().equals("tk_llaAbr") | tk.obtTok().equals("tk_llaCie") | tk.obtTok().equals("tk_gui") | tk.obtTok().equals("tk_men") | tk.obtTok().equals("tk_may") | tk.obtTok().equals("tk_punCom") | tk.obtTok().equals("tk_por") | tk.obtTok().equals("tk_dosPun") | tk.obtTok().equals("tk_pun") | tk.obtTok().equals("tk_barVer") | tk.obtTok().equals("tk_cieInt") | tk.obtTok().equals("tk_ast") | tk.obtTok().equals("tk_mas") | tk.obtTok().equals("tk_com") | tk.obtTok().equals("tk_sim")
+        if (tk.obtTok().equals("tk_let") | tk.obtTok().equals("tk_numero") | tk.obtTok().equals("tk_llaAbr") | tk.obtTok().equals("tk_llaCie") | tk.obtTok().equals("tk_gui") | tk.obtTok().equals("tk_men") | tk.obtTok().equals("tk_may") | tk.obtTok().equals("tk_punCom") | tk.obtTok().equals("tk_por") | tk.obtTok().equals("tk_dosPun") | tk.obtTok().equals("tk_pun") | tk.obtTok().equals("tk_barVer") | tk.obtTok().equals("tk_cieInt") | tk.obtTok().equals("tk_ast") | tk.obtTok().equals("tk_mas") | tk.obtTok().equals("tk_com") | tk.obtTok().equals("tk_sim")) {
             con.agrEle(tk);
             sigIte();
             est6();
         } else {
-            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> DIGITO/NUMERO");
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> DIGITO/NUMERO/SIMBOLO");
             estE(e);
         }
     }
-
+    
     private void est6() {
         if (tk.obtTok().equals("tk_com")) {
             con.estDes("lis");
@@ -123,11 +128,11 @@ public class AnalizadorSintactico {
                 Token ti = le.getFirst();
                 Token tf = le.getLast();
                 if (ti.obtLex().length() == 1 & tf.obtLex().length() == 1) {
-                    if (ti.obtLex().charAt(0) < tf.obtLex().charAt(0) ) {
+                    if (ti.obtLex().charAt(0) < tf.obtLex().charAt(0)) {
                         lisCon.add(con);
                     }
                 }
-            }else{
+            } else {
                 lisCon.add(con);
             }
             sigIte();
@@ -137,9 +142,10 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-
+    
     private void est7() {
-        if (tk.obtTok().equals("tk_let") | tk.obtTok().equals("tk_numero")) {
+        //
+        if (tk.obtTok().equals("tk_let") | tk.obtTok().equals("tk_numero") | tk.obtTok().equals("tk_llaAbr") | tk.obtTok().equals("tk_llaCie") | tk.obtTok().equals("tk_gui") | tk.obtTok().equals("tk_men") | tk.obtTok().equals("tk_may") | tk.obtTok().equals("tk_punCom") | tk.obtTok().equals("tk_por") | tk.obtTok().equals("tk_dosPun") | tk.obtTok().equals("tk_pun") | tk.obtTok().equals("tk_barVer") | tk.obtTok().equals("tk_cieInt") | tk.obtTok().equals("tk_ast") | tk.obtTok().equals("tk_mas") | tk.obtTok().equals("tk_com") | tk.obtTok().equals("tk_sim")) {
             con.agrEle(tk);
             sigIte();
             est8();
@@ -148,7 +154,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-
+    
     private void est8() {
         if (tk.obtTok().equals("tk_com")) {
             con.estDes("lis");
@@ -160,11 +166,11 @@ public class AnalizadorSintactico {
                 Token ti = le.getFirst();
                 Token tf = le.getLast();
                 if (ti.obtLex().length() == 1 & tf.obtLex().length() == 1) {
-                    if (ti.obtLex().charAt(0) < tf.obtLex().charAt(0) ) {
+                    if (ti.obtLex().charAt(0) < tf.obtLex().charAt(0)) {
                         lisCon.add(con);
                     }
                 }
-            }else{
+            } else {
                 lisCon.add(con);
             }
             if (ite.hasNext()) {
@@ -176,9 +182,9 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-
+    
     private void est9() {
-        if (tk.obtTok().equals("tk_let") | tk.obtTok().equals("tk_numero")) {
+        if (tk.obtTok().equals("tk_let") | tk.obtTok().equals("tk_numero") | tk.obtTok().equals("tk_llaAbr") | tk.obtTok().equals("tk_llaCie") | tk.obtTok().equals("tk_gui") | tk.obtTok().equals("tk_men") | tk.obtTok().equals("tk_may") | tk.obtTok().equals("tk_punCom") | tk.obtTok().equals("tk_por") | tk.obtTok().equals("tk_dosPun") | tk.obtTok().equals("tk_pun") | tk.obtTok().equals("tk_barVer") | tk.obtTok().equals("tk_cieInt") | tk.obtTok().equals("tk_ast") | tk.obtTok().equals("tk_mas") | tk.obtTok().equals("tk_com") | tk.obtTok().equals("tk_sim")) {
             con.agrEle(tk);
             sigIte();
             est10();
@@ -187,7 +193,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-
+    
     private void est10() {
         if (tk.obtTok().equals("tk_punCom")) {
             if (con.obtDes().equals("ran")) {
@@ -195,11 +201,11 @@ public class AnalizadorSintactico {
                 Token ti = le.getFirst();
                 Token tf = le.getLast();
                 if (ti.obtLex().length() == 1 & tf.obtLex().length() == 1) {
-                    if (ti.obtLex().charAt(0) < tf.obtLex().charAt(0) ) {
+                    if (ti.obtLex().charAt(0) < tf.obtLex().charAt(0)) {
                         lisCon.add(con);
                     }
                 }
-            }else{
+            } else {
                 lisCon.add(con);
             }
             sigIte();
@@ -223,7 +229,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-
+    
     private void est12() {
         if (tk.obtTok().equals("tk_may")) {
             sigIte();
@@ -233,7 +239,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-
+    
     private void est13() {
         if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto")) {
             exp.agregar("rai-izq", tk);
@@ -260,7 +266,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-
+    
     private void est15() {
         if (tk.obtTok().equals("tk_punCom")) {
             exp.agregar("rai-der", new Token("tk_num", "#", 0, 0));
@@ -283,9 +289,9 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-
+    
     private void est17() {
-        if (tk.obtTok().equals("tk_id")) {
+        if (tk.obtTok().equals("tk_id") || tk.obtTok().equals("tk_let")) {
             sigIte();
             est18();
         } else {
@@ -293,7 +299,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-
+    
     private void est18() {
         if (tk.obtTok().equals("tk_llaCie")) {
             sigIte();
@@ -320,7 +326,7 @@ public class AnalizadorSintactico {
             return false;
         }
     }
-
+    
     private boolean est20(String pos) {
         if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto")) {
             exp.agregar(pos, tk);
@@ -337,9 +343,9 @@ public class AnalizadorSintactico {
             return false;
         }
     }
-
+    
     private boolean est21(String pos) {
-        if (tk.obtTok().equals("tk_id")) {
+        if (tk.obtTok().equals("tk_id") || tk.obtTok().equals("tk_let")) {
             exp.agregar(pos, tk);
             sigIte();
             return est22();
@@ -349,7 +355,7 @@ public class AnalizadorSintactico {
             return false;
         }
     }
-
+    
     private boolean est22() {
         if (tk.obtTok().equals("tk_llaCie")) {
             sigIte();
@@ -373,7 +379,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-
+    
     private void est24() {
         if (tk.obtTok().equals("tk_punCom")) {
             sigIte();
@@ -390,12 +396,11 @@ public class AnalizadorSintactico {
             lisErr.add(err);
             sigIte();
             est0();
-        } else if (tk.obtTok().equals("tk_gui")) {
-            antIte();
-            est0();
         } else if (tk.obtTok().equals("tk_por")) {
+            lisErr.add(err);
             est0();
         } else if (tk.obtTok().equals("tk_con")) {
+            lisErr.add(err);
             est0();
         } else if (tk.obtTok().equals("")) {
             // termina la ejecucion
@@ -404,33 +409,92 @@ public class AnalizadorSintactico {
             estE(err);
         }
     }
-
+    
     private void sigIte() {
         if (ite.hasNext()) {
             tk = (Token) ite.next();
         }
     }
-
+    
     private void antIte() {
         if (ite.hasPrevious()) {
-            ite.previous();
+            tk = (Token) ite.previous();
         }
     }
 
     // Otros Metodos
     public LinkedList<Conjunto> obtLisCon() {
+        LinkedList<Conjunto> lc = lisCon;
+        for (Conjunto c : lc) {
+            System.out.println(c.obtNom() + " tip: " + c.obtDes());
+            if (c.obtDes().equals("lis")) {
+                for (Token t : c.obtEle()) {
+                    System.out.print(t.obtLex() + " ");
+                }
+                System.out.println("");
+            } else {
+                if (c.obtEle().getFirst().obtLex().length() == 1 & c.obtEle().getLast().obtLex().length() == 1) {
+                    char p = c.obtEle().getFirst().obtLex().charAt(0);
+                    char u = c.obtEle().getLast().obtLex().charAt(0);
+                    if (p < u) {
+                        if (verNumero(p) & verNumero(u)) {
+                            for (int i = (int) p; i <= (int) u; i++) {
+                                System.out.print((char) i + " ");
+                            }
+                            System.out.println("");
+                        } else if (verLetra(p) & verLetra(u)) {
+                            for (int i = (int) p; i <= (int) u; i++) {
+                                System.out.print((char) i + " ");
+                            }
+                            System.out.println("");
+                        } else {
+                            for (int i = (int) p; i <= (int) u; i++) {
+                                if (!verLetra((char) i) && !verNumero((char) i)) {
+                                    System.out.print((char) i + " ");
+                                }
+                                
+                            }
+                            System.out.println("");
+                        }
+                    }
+                }
+            }
+        }
+        
         return lisCon;
     }
-
+    
     public LinkedList<Arbol> obtLisExp() {
         return lisExp;
     }
-
+    
     public LinkedList<Cadena> obtLisCad() {
         return lisCad;
     }
     
-    public LinkedList<Token> obtLisErr(){
+    public LinkedList<Token> obtLisErr() {
         return lisErr;
+    }
+    
+    private boolean verLetra(char car) {
+        boolean ver = false;
+        if (car >= 'a' & car <= 'z') {
+            ver = true;
+        }
+        if (car >= 'A' & car <= 'Z') {
+            ver = true;
+        }
+        if (car == 'ñ' | car == 'Ñ') {
+            ver = true;
+        }
+        return ver;
+    }
+    
+    private boolean verNumero(char car) {
+        boolean ver = false;
+        if (car >= '0' & car <= '9') {
+            ver = true;
+        }
+        return ver;
     }
 }

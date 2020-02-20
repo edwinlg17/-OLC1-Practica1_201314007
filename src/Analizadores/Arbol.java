@@ -50,8 +50,7 @@ public class Arbol {
     }
 
     public void generarGraficos() {
-        File dd1 = new File(System.getProperty("user.home") + "/desktop/Diagramas");
-        dd1.delete();
+
         lisSig = new LinkedList<>();
         lisTra = new LinkedList<>();
         tra = new Transicion("", new LinkedList<>());
@@ -60,19 +59,16 @@ public class Arbol {
         genTabSig(raiz);
         genTabTra();
 
-        System.out.println("///////");
+//        System.out.println("///////");
         obtCodArb();
-        System.out.println("///////");
+//        System.out.println("///////");
         obtCodTabSig();
-        System.out.println("///////");
+//        System.out.println("///////");
         obtCodTabTra();
-        System.out.println("///////");
+//        System.out.println("///////");
         obtCodAut();
 
-        File da2 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Arboles");
-        File ds3 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Siguientes");
-        File dt4 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Transiciones");
-        File da5 = new File(System.getProperty("user.home") + "/desktop/Diagramas/Automatas");
+        obtAut();
     }
 
     //////////////// Aanlisis Arbol
@@ -320,6 +316,21 @@ public class Arbol {
         return ll;
     }
 
+    private LinkedList<Estado> obtAut() {
+        LinkedList<Estado> na = new LinkedList<>();
+        for (int i = 1; i < lisTra.size(); i++) {
+            //na.add(new Estado(t.obtNom(), t.o, nom))
+            for (int j = 0; j < lisTra.get(i).obtTra().size(); j++) {
+                if (!lisTra.get(i).obtTra().get(j).equals("")) {
+                    na.add(new Estado(lisTra.get(i).obtNom(), lisTra.get(0).obtTra().get(j), lisTra.get(i).obtTra().get(j)));
+                    System.out.println(lisTra.get(i).obtNom() + " -- " + lisTra.get(0).obtTra().get(j) + " -> " + lisTra.get(i).obtTra().get(j));
+                }
+                
+            }
+        }
+        return na;
+    }
+
     //////////////// Metodos de Generacion de Codigo
     // Metodo obtener codigo arbol
     public void obtCodArb() {
@@ -474,8 +485,7 @@ public class Arbol {
 
             cod += "</TR>\n";
         }
-        
-        
+
         cod = "digraph G {\n"
                 + "node [shape=plaintext];\n"
                 + "tabla[label=<\n"
@@ -485,7 +495,7 @@ public class Arbol {
                 + "\n\n}";
 
         creArc("traTem_" + nom, System.getProperty("user.home") + "/desktop/Diagramas/Transiciones/" + nom, cod);
-        
+
 //        System.out.println("////////////////// Tabla Transiciones");
 //        System.out.println(cod);
 //        System.out.println("//////////////////");
@@ -537,7 +547,7 @@ public class Arbol {
                 + "\n\n}";
 
         creArc("autTem_" + nom, System.getProperty("user.home") + "/desktop/Diagramas/Automatas/" + nom, cod);
-        
+
 //        System.out.println("////////////////// Automata");
 //        System.out.println(ran);
 //        System.out.println(tra);
@@ -566,4 +576,5 @@ public class Arbol {
         } catch (Exception e) {
         }
     }
+
 }
