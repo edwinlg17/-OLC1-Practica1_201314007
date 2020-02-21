@@ -163,10 +163,7 @@ public class AnalizadorLexico {
                         col++;
                     } else {
                         est = 0;
-                        lex += car;
-                        ite++;
-                        col++;
-                        //System.out.println("ERROR SINTACTICO:" + lex + " - " + fl + " - " + cl);
+                        lisTok.add(new Token(verTkSim(String.valueOf(lex)), lex, fl, fl));
                         lex = "";
                     }
                     break;

@@ -50,7 +50,6 @@ public class Arbol {
     }
 
     public void generarGraficos() {
-
         lisSig = new LinkedList<>();
         lisTra = new LinkedList<>();
         tra = new Transicion("", new LinkedList<>());
@@ -67,8 +66,6 @@ public class Arbol {
         obtCodTabTra();
 //        System.out.println("///////");
         obtCodAut();
-
-        obtAut();
     }
 
     //////////////// Aanlisis Arbol
@@ -316,19 +313,30 @@ public class Arbol {
         return ll;
     }
 
-    private LinkedList<Estado> obtAut() {
-        LinkedList<Estado> na = new LinkedList<>();
+    public LinkedList<Estado> genAut() {
+        lisSig = new LinkedList<>();
+        lisTra = new LinkedList<>();
+        tra = new Transicion("", new LinkedList<>());
+        ind = 1;
+        anaArb(raiz);
+        genTabSig(raiz);
+        genTabTra();
+
+        LinkedList<Estado> aut = new LinkedList<>();
+
         for (int i = 1; i < lisTra.size(); i++) {
-            //na.add(new Estado(t.obtNom(), t.o, nom))
             for (int j = 0; j < lisTra.get(i).obtTra().size(); j++) {
                 if (!lisTra.get(i).obtTra().get(j).equals("")) {
-                    na.add(new Estado(lisTra.get(i).obtNom(), lisTra.get(0).obtTra().get(j), lisTra.get(i).obtTra().get(j)));
-                    System.out.println(lisTra.get(i).obtNom() + " -- " + lisTra.get(0).obtTra().get(j) + " -> " + lisTra.get(i).obtTra().get(j));
+                    int u = lisTra.get(i).obtCon().getLast();
+                    if (!busSim(u).equals("#")) {
+                        aut.add(new Estado(lisTra.get(i).obtNom(), lisTra.get(0).obtTra().get(j), lisTra.get(i).obtTra().get(j), false));
+                    } else {
+                        aut.add(new Estado(lisTra.get(i).obtNom(), lisTra.get(0).obtTra().get(j), lisTra.get(i).obtTra().get(j), true));
+                    }
                 }
-                
             }
         }
-        return na;
+        return aut;
     }
 
     //////////////// Metodos de Generacion de Codigo
@@ -577,4 +585,6 @@ public class Arbol {
         }
     }
 
+    
+    
 }

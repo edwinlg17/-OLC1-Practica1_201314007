@@ -233,7 +233,7 @@ public class Ventana extends JFrame {
         jpSal.add(jspSal, gbc);
 
         // inserto panel salida
-        establecerGBC(0, 1, 2, 1, 1.0, 0.2);
+        establecerGBC(0, 1, 2, 1, 1.0, 0.35);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(5, 10, 10, 10);
         this.add(jpSal, gbc);
@@ -277,7 +277,16 @@ public class Ventana extends JFrame {
     }
 
     private void accionBotonGenerarXML(ActionEvent evt) {
+        AnalizadorLexico al = new AnalizadorLexico();
+        al.analizar(jtaEnt.getText());
 
+        String lt = "//////////// INICIO ANALISIS ////////////\n";
+        lt += "Lista de Tokens:\n";
+        for (Token t : al.obtenerTokens()) {
+            lt += "   " + t.obtTok() + "\tlex: " + t.obtLex() + "\t\tfil: " + t.obtFil() + "\tcol: " + t.obtCol() + "\n";
+        }
+        lt += "//////////// FIN ANALISIS ////////////\n";
+        jtaSal.setText(lt);
     }
 
     // METODOS BOTONES Entrada
@@ -290,28 +299,22 @@ public class Ventana extends JFrame {
 
         String err = "//////////// INICIO ANALISIS ////////////\n";
 
+        err += "Analisis Lexico:\n";
         LinkedList<Token> lt = al.obtenerErrores();
         for (Token t : lt) {
             err += "ERROR LEXICO: lex: " + t.obtLex() + " fil: " + t.obtFil() + " col: " + t.obtCol() + " " + t.obtDes() + "\n";
         }
 
+        err += "\nAnalisis Sintactico:\n";
         LinkedList<Token> le = as.obtLisErr();
         for (Token t : le) {
             err += "ERROR SINTACTICO: lex: " + t.obtLex() + " fil: " + t.obtFil() + " col: " + t.obtCol() + " " + t.obtDes() + "\n";
         }
-
+        err += "\nAnalisis de Cadenas:\n";
+        err += as.analizarCadenas();
         err += "//////////// FIN ANALISIS ////////////\n";
 
         jtaSal.setText(err);
-
-        as.obtLisCon();
-
-
-//        LinkedList<Cadena> lc = as.obtLisCad();
-//        
-//        for (Cadena c: lc) {
-//            System.out.println(c.obtNom() + " - " + c.obtCad().obtLex());
-//        }
     }
 
     private void accionBotonGenerarAutomata(ActionEvent evt) {

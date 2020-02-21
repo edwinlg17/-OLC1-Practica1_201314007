@@ -6,24 +6,27 @@ public class Conjunto {
 
     //////////////// ATRIBUTOS
     private String nom, des;
-    private LinkedList<Token> ele;
+    private LinkedList<Token> lisEle;
+    private String lisCar;
 
     //////////////// CONSTRUCTOR
     public Conjunto() {
         this.nom = "";
         this.des = "";
-        this.ele = new LinkedList<>();
+        this.lisEle = new LinkedList<>();
+        this.lisCar = "";
     }
 
     public Conjunto(String nom) {
         this.nom = nom;
-        this.ele = new LinkedList<>();
+        this.lisEle = new LinkedList<>();
     }
 
     public Conjunto(String nom, String des, LinkedList<Token> ele) {
         this.nom = nom;
         this.des = des;
-        this.ele = ele;
+        this.lisEle = ele;
+        this.lisCar = "";
     }
 
     //////////////// METODOS
@@ -32,7 +35,11 @@ public class Conjunto {
     }
 
     public void estEle(LinkedList<Token> ele) {
-        this.ele = ele;
+        this.lisEle = ele;
+    }
+
+    public void estLisCar(String lisCar) {
+        this.lisCar = lisCar;
     }
 
     public void estDes(String des) {
@@ -44,7 +51,11 @@ public class Conjunto {
     }
 
     public LinkedList<Token> obtEle() {
-        return ele;
+        return lisEle;
+    }
+
+    public String obtLisCar() {
+        return lisCar;
     }
 
     public String obtDes() {
@@ -53,15 +64,14 @@ public class Conjunto {
 
     public void agrEle(Token ele) {
         boolean ver = true;
-        for (Token s : this.ele) {
+        for (Token s : this.lisEle) {
             if (s.obtLex().equals(ele)) {
                 ver = false;
             }
         }
         if (ver) {
-            this.ele.add(ele);
+            this.lisEle.add(ele);
         }
     }
-    
 
 }

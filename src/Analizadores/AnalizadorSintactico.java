@@ -30,13 +30,14 @@ public class AnalizadorSintactico {
         ite = lisTok.listIterator();
         con = new Conjunto();
         tk = new Token();
-        
+
         if (ite.hasNext()) {
             tk = (Token) ite.next();
             est0();
         }
+
     }
-    
+
     private void est0() {
         con = new Conjunto();
         if (tk.obtTok().equals("tk_con")) {
@@ -69,9 +70,9 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est2() {
-        if (tk.obtTok().equals("tk_id")) {
+        if (tk.obtTok().equals("tk_id") || tk.obtTok().equals("tk_let")) {
             con.estNom(tk.obtLex());
             sigIte();
             est3();
@@ -80,7 +81,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est3() {
         if (tk.obtTok().equals("tk_gui")) {
             sigIte();
@@ -90,7 +91,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est4() {
         if (tk.obtTok().equals("tk_may")) {
             sigIte();
@@ -100,9 +101,8 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est5() {
-        //| tk.obtTok().equals("tk_llaAbr") | tk.obtTok().equals("tk_llaCie") | tk.obtTok().equals("tk_gui") | tk.obtTok().equals("tk_men") | tk.obtTok().equals("tk_may") | tk.obtTok().equals("tk_punCom") | tk.obtTok().equals("tk_por") | tk.obtTok().equals("tk_dosPun") | tk.obtTok().equals("tk_pun") | tk.obtTok().equals("tk_barVer") | tk.obtTok().equals("tk_cieInt") | tk.obtTok().equals("tk_ast") | tk.obtTok().equals("tk_mas") | tk.obtTok().equals("tk_com") | tk.obtTok().equals("tk_sim")
         if (tk.obtTok().equals("tk_let") | tk.obtTok().equals("tk_numero") | tk.obtTok().equals("tk_llaAbr") | tk.obtTok().equals("tk_llaCie") | tk.obtTok().equals("tk_gui") | tk.obtTok().equals("tk_men") | tk.obtTok().equals("tk_may") | tk.obtTok().equals("tk_punCom") | tk.obtTok().equals("tk_por") | tk.obtTok().equals("tk_dosPun") | tk.obtTok().equals("tk_pun") | tk.obtTok().equals("tk_barVer") | tk.obtTok().equals("tk_cieInt") | tk.obtTok().equals("tk_ast") | tk.obtTok().equals("tk_mas") | tk.obtTok().equals("tk_com") | tk.obtTok().equals("tk_sim")) {
             con.agrEle(tk);
             sigIte();
@@ -112,7 +112,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est6() {
         if (tk.obtTok().equals("tk_com")) {
             con.estDes("lis");
@@ -123,18 +123,8 @@ public class AnalizadorSintactico {
             sigIte();
             est9();
         } else if (tk.obtTok().equals("tk_punCom")) {
-            if (con.obtDes().equals("ran")) {
-                LinkedList<Token> le = con.obtEle();
-                Token ti = le.getFirst();
-                Token tf = le.getLast();
-                if (ti.obtLex().length() == 1 & tf.obtLex().length() == 1) {
-                    if (ti.obtLex().charAt(0) < tf.obtLex().charAt(0)) {
-                        lisCon.add(con);
-                    }
-                }
-            } else {
-                lisCon.add(con);
-            }
+            genLisCarCon();
+            lisCon.add(con);
             sigIte();
             est0();
         } else {
@@ -142,9 +132,8 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est7() {
-        //
         if (tk.obtTok().equals("tk_let") | tk.obtTok().equals("tk_numero") | tk.obtTok().equals("tk_llaAbr") | tk.obtTok().equals("tk_llaCie") | tk.obtTok().equals("tk_gui") | tk.obtTok().equals("tk_men") | tk.obtTok().equals("tk_may") | tk.obtTok().equals("tk_punCom") | tk.obtTok().equals("tk_por") | tk.obtTok().equals("tk_dosPun") | tk.obtTok().equals("tk_pun") | tk.obtTok().equals("tk_barVer") | tk.obtTok().equals("tk_cieInt") | tk.obtTok().equals("tk_ast") | tk.obtTok().equals("tk_mas") | tk.obtTok().equals("tk_com") | tk.obtTok().equals("tk_sim")) {
             con.agrEle(tk);
             sigIte();
@@ -154,25 +143,15 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est8() {
         if (tk.obtTok().equals("tk_com")) {
             con.estDes("lis");
             sigIte();
             est7();
         } else if (tk.obtTok().equals("tk_punCom")) {
-            if (con.obtDes().equals("ran")) {
-                LinkedList<Token> le = con.obtEle();
-                Token ti = le.getFirst();
-                Token tf = le.getLast();
-                if (ti.obtLex().length() == 1 & tf.obtLex().length() == 1) {
-                    if (ti.obtLex().charAt(0) < tf.obtLex().charAt(0)) {
-                        lisCon.add(con);
-                    }
-                }
-            } else {
-                lisCon.add(con);
-            }
+            genLisCarCon();
+            lisCon.add(con);
             if (ite.hasNext()) {
                 tk = (Token) ite.next();
             }
@@ -182,7 +161,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est9() {
         if (tk.obtTok().equals("tk_let") | tk.obtTok().equals("tk_numero") | tk.obtTok().equals("tk_llaAbr") | tk.obtTok().equals("tk_llaCie") | tk.obtTok().equals("tk_gui") | tk.obtTok().equals("tk_men") | tk.obtTok().equals("tk_may") | tk.obtTok().equals("tk_punCom") | tk.obtTok().equals("tk_por") | tk.obtTok().equals("tk_dosPun") | tk.obtTok().equals("tk_pun") | tk.obtTok().equals("tk_barVer") | tk.obtTok().equals("tk_cieInt") | tk.obtTok().equals("tk_ast") | tk.obtTok().equals("tk_mas") | tk.obtTok().equals("tk_com") | tk.obtTok().equals("tk_sim")) {
             con.agrEle(tk);
@@ -193,21 +172,11 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est10() {
         if (tk.obtTok().equals("tk_punCom")) {
-            if (con.obtDes().equals("ran")) {
-                LinkedList<Token> le = con.obtEle();
-                Token ti = le.getFirst();
-                Token tf = le.getLast();
-                if (ti.obtLex().length() == 1 & tf.obtLex().length() == 1) {
-                    if (ti.obtLex().charAt(0) < tf.obtLex().charAt(0)) {
-                        lisCon.add(con);
-                    }
-                }
-            } else {
-                lisCon.add(con);
-            }
+            genLisCarCon();
+            lisCon.add(con);
             sigIte();
             est0();
         } else {
@@ -229,7 +198,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est12() {
         if (tk.obtTok().equals("tk_may")) {
             sigIte();
@@ -239,7 +208,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est13() {
         if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto")) {
             exp.agregar("rai-izq", tk);
@@ -266,7 +235,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est15() {
         if (tk.obtTok().equals("tk_punCom")) {
             exp.agregar("rai-der", new Token("tk_num", "#", 0, 0));
@@ -289,7 +258,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est17() {
         if (tk.obtTok().equals("tk_id") || tk.obtTok().equals("tk_let")) {
             sigIte();
@@ -299,7 +268,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est18() {
         if (tk.obtTok().equals("tk_llaCie")) {
             sigIte();
@@ -326,7 +295,7 @@ public class AnalizadorSintactico {
             return false;
         }
     }
-    
+
     private boolean est20(String pos) {
         if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto")) {
             exp.agregar(pos, tk);
@@ -343,7 +312,7 @@ public class AnalizadorSintactico {
             return false;
         }
     }
-    
+
     private boolean est21(String pos) {
         if (tk.obtTok().equals("tk_id") || tk.obtTok().equals("tk_let")) {
             exp.agregar(pos, tk);
@@ -355,7 +324,7 @@ public class AnalizadorSintactico {
             return false;
         }
     }
-    
+
     private boolean est22() {
         if (tk.obtTok().equals("tk_llaCie")) {
             sigIte();
@@ -379,7 +348,7 @@ public class AnalizadorSintactico {
             estE(e);
         }
     }
-    
+
     private void est24() {
         if (tk.obtTok().equals("tk_punCom")) {
             sigIte();
@@ -409,13 +378,13 @@ public class AnalizadorSintactico {
             estE(err);
         }
     }
-    
+
     private void sigIte() {
         if (ite.hasNext()) {
             tk = (Token) ite.next();
         }
     }
-    
+
     private void antIte() {
         if (ite.hasPrevious()) {
             tk = (Token) ite.previous();
@@ -424,58 +393,21 @@ public class AnalizadorSintactico {
 
     // Otros Metodos
     public LinkedList<Conjunto> obtLisCon() {
-        LinkedList<Conjunto> lc = lisCon;
-        for (Conjunto c : lc) {
-            System.out.println(c.obtNom() + " tip: " + c.obtDes());
-            if (c.obtDes().equals("lis")) {
-                for (Token t : c.obtEle()) {
-                    System.out.print(t.obtLex() + " ");
-                }
-                System.out.println("");
-            } else {
-                if (c.obtEle().getFirst().obtLex().length() == 1 & c.obtEle().getLast().obtLex().length() == 1) {
-                    char p = c.obtEle().getFirst().obtLex().charAt(0);
-                    char u = c.obtEle().getLast().obtLex().charAt(0);
-                    if (p < u) {
-                        if (verNumero(p) & verNumero(u)) {
-                            for (int i = (int) p; i <= (int) u; i++) {
-                                System.out.print((char) i + " ");
-                            }
-                            System.out.println("");
-                        } else if (verLetra(p) & verLetra(u)) {
-                            for (int i = (int) p; i <= (int) u; i++) {
-                                System.out.print((char) i + " ");
-                            }
-                            System.out.println("");
-                        } else {
-                            for (int i = (int) p; i <= (int) u; i++) {
-                                if (!verLetra((char) i) && !verNumero((char) i)) {
-                                    System.out.print((char) i + " ");
-                                }
-                                
-                            }
-                            System.out.println("");
-                        }
-                    }
-                }
-            }
-        }
-        
         return lisCon;
     }
-    
+
     public LinkedList<Arbol> obtLisExp() {
         return lisExp;
     }
-    
+
     public LinkedList<Cadena> obtLisCad() {
         return lisCad;
     }
-    
+
     public LinkedList<Token> obtLisErr() {
         return lisErr;
     }
-    
+
     private boolean verLetra(char car) {
         boolean ver = false;
         if (car >= 'a' & car <= 'z') {
@@ -489,12 +421,143 @@ public class AnalizadorSintactico {
         }
         return ver;
     }
-    
+
     private boolean verNumero(char car) {
         boolean ver = false;
         if (car >= '0' & car <= '9') {
             ver = true;
         }
         return ver;
+    }
+
+    private void genLisCarCon() {
+        String st = "";
+        if (con.obtDes().equals("lis")) {
+            for (Token t : con.obtEle()) {
+                st += t.obtLex();
+            }
+            con.estLisCar(st);
+        } else {
+            if (con.obtEle().getFirst().obtLex().length() == 1 & con.obtEle().getLast().obtLex().length() == 1) {
+                char p = con.obtEle().getFirst().obtLex().charAt(0);
+                char u = con.obtEle().getLast().obtLex().charAt(0);
+                if (p < u) {
+                    if (verNumero(p) & verNumero(u)) {
+                        for (int i = (int) p; i <= (int) u; i++) {
+                            st += (char) i;
+                        }
+                        con.estLisCar(st);
+                    } else if (verLetra(p) & verLetra(u)) {
+                        for (int i = (int) p; i <= (int) u; i++) {
+                            st += (char) i;
+                        }
+                        con.estLisCar(st);
+                    } else {
+                        for (int i = (int) p; i <= (int) u; i++) {
+                            if (!verLetra((char) i) && !verNumero((char) i)) {
+                                st += (char) i;
+                            }
+                        }
+                        con.estLisCar(st);
+                    }
+                }
+            }
+        }
+    }
+
+    public String analizarCadenas() {
+        LinkedList<Cadena> lc = lisCad;
+
+        String log = "";
+        // obtengo la cadena a analizar
+        for (Cadena c : lc) {
+            String cad = c.obtCad().obtLex().replace("\"", "");
+            int pos = 0;
+
+            // obtengo la exprecion regular
+            for (Arbol a : lisExp) {
+                if (c.obtNom().equals(a.obtNom())) {
+                    LinkedList<Estado> aut = a.genAut();
+
+                    String est = "S0";
+                    pos = 0;
+                    boolean ver;
+                    // recorro la cadena
+                    do {
+                        ver = false;
+                        // obtengo el estado actual con transicion
+                        for (Estado e : aut) {
+                            // verifico que encontre un posible estado para la transicion
+                            if (est.equals(e.obtEstO())) {
+
+                                if (pos > cad.length() - 1 & e.obtFin()) {
+                                    log += "ER: " + c.obtNom() + " La cadena >>" + cad + "<< es una cadena valida... \n";
+                                    c.estVal(true);
+                                    ver = false;
+                                    //System.out.println("La cadena >>" + cad + "<< Es una cadena Invalida... pos:" + pos + " car:" + ct);
+                                    break;
+                                }
+
+                                String tip = verTip(e.obtSim());
+                                // verifico que tipo de transicion
+                                String st = e.obtSim().replace("\"", "");
+                                if (tip.equals("tex") || tip.equals("num")) {
+                                    int fin = pos + st.length();
+                                    // verifico que el tamñano de la transicion no sea mas grande que la cadena
+                                    if (fin <= cad.length()) {
+                                        String ct = cad.substring(pos, fin);
+                                        // verifico la transicion con la cadena
+                                        if (st.equals(ct)) {
+                                            pos += st.length();
+                                            ver = true;
+                                            est = e.obtEstD();
+                                            //System.out.println(e.obtEstO() + " -- " + e.obtSim() + " -- " + e.obtEstD() + " >> " + ct);
+                                            break; // si el estado es aceptado
+                                        } else {
+                                            //System.out.println(e.obtEstO() + " -- " + e.obtSim() + " -- " + e.obtEstD() + " >>" + ct + "<< pos: " + pos + " ERROR");
+                                        }
+                                    }
+                                } else if (tip.equals("id")) {
+                                    for (Conjunto co : lisCon) {
+                                        if (co.obtNom().equals(st)) {
+                                            if (pos <= cad.length() - 1) {
+                                                String ct = String.valueOf(cad.charAt(pos)); // caracter a verifivar
+                                                String b = co.obtLisCar(); // caracteres permitidos
+                                                if (b.contains(ct)) {
+                                                    pos++;
+                                                    ver = true;
+                                                    //System.out.println(e.obtEstO() + " -- " + e.obtSim() + " -- " + e.obtEstD() + " >> " + ct);
+                                                    est = e.obtEstD();
+                                                } else {
+                                                    //System.out.println(e.obtEstO() + " -- " + e.obtSim() + " -- " + e.obtEstD() + " >>" + ct + "<< pos: " + pos + " ERROR");
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } while (ver);
+                    break; // si el ID de la Cadena corresponde con ID del la ER
+                }
+            }
+            if (!c.obtVal()) {
+                String ct = String.valueOf(cad.charAt(pos));
+                log += "ER: " + c.obtNom() + " La cadena >>" + cad + "<< es una cadena invalida... Error car:>>" + ct + "<< pos:" + ++pos + "\n";
+            }
+        }
+        return log;
+    }
+
+    private String verTip(String l) {
+        if (l.length() >= 2 & l.charAt(0) == '"' & l.charAt(l.length() - 1) == '"') {
+            return "tex";
+        } else if (l.length() >= 1 & verNumero(l.charAt(0))) {
+            return "num";
+        } else if (l.length() >= 1 & verLetra(l.charAt(0))) {
+            return "id";
+        }
+        return "";
     }
 }
