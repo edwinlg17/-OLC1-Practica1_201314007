@@ -333,6 +333,11 @@ public class Arbol {
                     } else {
                         aut.add(new Estado(lisTra.get(i).obtNom(), lisTra.get(0).obtTra().get(j), lisTra.get(i).obtTra().get(j), true));
                     }
+                } else {
+                    int u = lisTra.get(i).obtCon().getLast();
+                    if (busSim(u).equals("#")) {
+                        aut.add(new Estado(lisTra.get(i).obtNom(), "", lisTra.get(i).obtTra().get(j), true));
+                    }
                 }
             }
         }
@@ -344,7 +349,17 @@ public class Arbol {
     public void obtCodArb() {
         ind = 1;
         String cod = "graph [label=\"Arbol --  " + nom + "\", labelloc=t, fontsize=30]; ";
-        cod += ind + "[label=\"" + raiz.obtSim().obtLex().replace("\"", "\\\"") + "\"];\n";
+
+        String t = raiz.obtSim().obtLex();
+        //System.out.println(t);
+        if (raiz.obtSim().obtTok().equals("tk_sim") & t.length() == 2 & !t.equals("\\\\")) {
+        } else if (raiz.obtSim().obtTok().equals("tk_texto") & t.contains("\"\\\"\"")) {
+            t = "\\\"\\\"\\\"";
+        } else {
+            t = t.replace("\"", "\\\"");
+        }
+        cod += ind + "[label=\"" + t + "\"];\n";
+
         if (raiz.obtNum() != -1) {
             cod += ind + ":s->" + ind + ":s[color=transparent, taillabel = <<font color=\"green\">" + raiz.obtNum() + "</font>>];\n";
         }
@@ -375,12 +390,32 @@ public class Arbol {
             }
 
             if (nt.izq != null) {
-                cod += String.valueOf(++ind) + "[label=\"" + nt.izq.obtSim().obtLex().replace("\"", "\\\"") + "\"];\n";
+                String t = nt.izq.obtSim().obtLex();
+                //System.out.println(t);
+                if (nt.izq.obtSim().obtTok().equals("tk_sim") & t.length() > 1 & !t.equals("\\\\")) {
+                    t = t.replace("\\", "");
+                    t = t.replace("\"", "\\\"");
+                } else if (nt.izq.obtSim().obtTok().equals("tk_texto") & t.contains("\"\\\"\"")) {
+                    t = "\\\"\\\"\\\"";
+                } else {
+                    t = t.replace("\"", "\\\"");
+                }
+                cod += String.valueOf(++ind) + "[label=\"" + t + "\"];\n";
                 cod += pad + "->" + ind + ";\n";
                 cod = obtCodArb(nt.izq, cod);
             }
             if (nt.der != null) {
-                cod += String.valueOf(++ind) + "[label=\"" + nt.der.obtSim().obtLex().replace("\"", "\\\"") + "\"];\n";
+                String t = nt.der.obtSim().obtLex();
+                //System.out.println(t);
+                if (nt.der.obtSim().obtTok().equals("tk_sim") & t.length() > 1 & !t.equals("\\\\")) {
+                    t = t.replace("\\", "");
+                    t = t.replace("\"", "\\\"");
+                } else if (nt.der.obtSim().obtTok().equals("tk_texto") & t.contains("\"\\\"\"")) {
+                    t = "\\\"\\\"\\\"";
+                } else {
+                    t = t.replace("\"", "\\\"");
+                }
+                cod += String.valueOf(++ind) + "[label=\"" + t + "\"];\n";
                 cod += pad + "->" + ind + ";\n";
                 cod = obtCodArb(nt.der, cod);
             }
@@ -526,7 +561,18 @@ public class Arbol {
                     String la = "";
                     for (int j = 0; j < lisTra.get(i).obtTra().size(); j++) {
                         if (s.equals(lisTra.get(i).obtTra().get(j))) {
-                            la += lisTra.get(0).obtTra().get(j) + ", ";
+                            String st = lisTra.get(0).obtTra().get(j);
+                            int t = st.length();
+                            if (t == 2) {
+                                if (st.charAt(0) == '\\') {
+                                    if (st.charAt(1) != '\\') {
+                                        st = st.replace("\\", "");
+                                    }
+                                }
+                            } else if (st.contains("\"\\\"\"")) {
+                                st = "\"\"\"";
+                            }
+                            la += st + ", ";
                         }
                     }
                     la = "[label=\"" + la.replace("\"", "\\\"") + "\"];\n";
@@ -585,6 +631,4 @@ public class Arbol {
         }
     }
 
-    
-    
 }

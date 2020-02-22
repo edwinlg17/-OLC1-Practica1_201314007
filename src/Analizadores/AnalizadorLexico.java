@@ -15,12 +15,11 @@ public class AnalizadorLexico {
     }
 
     //////////////// METODOS
-    
     // Metodo analizar
     public void analizar(String tex) {
         lisTok = new LinkedList<>();
         lisErr = new LinkedList<>();
-        
+
         int ite = 0, est = 0, fil = 1, col = 1;
         String lex = "";
 
@@ -71,11 +70,17 @@ public class AnalizadorLexico {
                         col++;
                     } // Simbolo
                     else if (verSimbolo(car)) {
-                        est = 0;
-                        lex += car;
-                        lisTok.add(new Token(verTkSim(String.valueOf(lex)), lex, fil, col));
-                        col++;
-                        lex = "";
+                        if (car == '\\') {
+                            est = 10;
+                            lex += car;
+                            col++;
+                        } else {
+                            est = 0;
+                            lex += car;
+                            lisTok.add(new Token(verTkSim(String.valueOf(lex)), lex, fil, col));
+                            col++;
+                            lex = "";
+                        }
                     } // Caracteres Omitibles
                     else if (car == '\r' | car == '\t') {
                         // caracteres omitibles
@@ -126,7 +131,12 @@ public class AnalizadorLexico {
                     break;
                 ////////////////////////////////// estado 3
                 case 3:
-                    if (car != '"') {
+                    if (car == '\\') {
+                        est = 11;
+                        lex += car;
+                        ite++;
+                        col++;
+                    } else if (car != '"') {
                         est = 3;
                         lex += car;
                         ite++;
@@ -226,21 +236,41 @@ public class AnalizadorLexico {
                         lex = "";
                     }
                     break;
+                case 10:
+                    if (verSimbolo(car)) {
+                        est = 0;
+                        lex += car;
+                        lisTok.add(new Token("tk_sim", lex, fil, col));
+                        col++;
+                        ite++;
+                        lex = "";
+                    } else {
+                        est = 0;
+                        lisTok.add(new Token(verTkSim(String.valueOf(lex)), lex, fil, col));
+                        lex = "";
+                    }
+                    break;
+                case 11:
+                    est = 3;
+                    lex += car;
+                    ite++;
+                    col++;
+                    break;
             }
         }
-        
+
     }
 
     // Metodo para obtener tokens
-    public LinkedList<Token> obtenerTokens(){
+    public LinkedList<Token> obtenerTokens() {
         return lisTok;
     }
-    
+
     // Metodo para obtener errores
-    public LinkedList<Token> obtenerErrores(){
+    public LinkedList<Token> obtenerErrores() {
         return lisErr;
     }
-    
+
     // Metodos de verificacion de caracteres
     private boolean verLetra(char car) {
         boolean ver = false;
@@ -293,7 +323,7 @@ public class AnalizadorLexico {
     // Metodos de verificacion de lexemas
     private String verTkPalRes(String lex) {
         String tok = "tk_id";
-        
+
         lex = lex.toLowerCase();
         switch (lex) {
             case "conj":

@@ -210,7 +210,7 @@ public class AnalizadorSintactico {
     }
 
     private void est13() {
-        if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto")) {
+        if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto") || tk.obtTok().equals("tk_sim")) {
             exp.agregar("rai-izq", tk);
             est14();
         } else if (tk.obtTok().equals("tk_llaAbr")) {
@@ -220,14 +220,14 @@ public class AnalizadorSintactico {
                 est15();
             }
         } else {
-            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> NUMERO/TEXTO { . | * + ?");
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> NUMERO/TEXTO { . | * + ? hola1");
             estE(e);
         }
     }
 
     // estados de solo 1 texto o numero
     private void est14() {
-        if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto")) {
+        if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto") || tk.obtTok().equals("tk_sim")) {
             sigIte();
             est15();
         } else {
@@ -297,7 +297,7 @@ public class AnalizadorSintactico {
     }
 
     private boolean est20(String pos) {
-        if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto")) {
+        if (tk.obtTok().equals("tk_numero") || tk.obtTok().equals("tk_texto") || tk.obtTok().equals("tk_sim")) {
             exp.agregar(pos, tk);
             sigIte();
             return true;
@@ -307,7 +307,7 @@ public class AnalizadorSintactico {
         } else if (tk.obtTok().equals("tk_pun") || tk.obtTok().equals("tk_barVer") || tk.obtTok().equals("tk_ast") || tk.obtTok().equals("tk_mas") || tk.obtTok().equals("tk_cieInt")) {
             return est19(pos);
         } else {
-            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> NUMERO/TEXTO { . | * + ?");
+            Token e = new Token(tk.obtTok(), tk.obtLex(), tk.obtFil(), tk.obtCol(), "Se esperaba -> NUMERO/TEXTO { . | * + ? hola 2");
             estE(e);
             return false;
         }
@@ -490,7 +490,7 @@ public class AnalizadorSintactico {
                             // verifico que encontre un posible estado para la transicion
                             if (est.equals(e.obtEstO())) {
 
-                                if (pos > cad.length() - 1 & e.obtFin()) {
+                                if (pos >= cad.length() - 1 & e.obtFin()) {
                                     log += "ER: " + c.obtNom() + " La cadena >>" + cad + "<< es una cadena valida... \n";
                                     c.estVal(true);
                                     ver = false;
@@ -543,20 +543,27 @@ public class AnalizadorSintactico {
                 }
             }
             if (!c.obtVal()) {
+                //System.out.println(c.obtNom() + " " + pos + " " + cad.length());
+                if (pos > cad.length() - 1) {
+                    pos = cad.length() - 1;
+                }
                 String ct = String.valueOf(cad.charAt(pos));
                 log += "ER: " + c.obtNom() + " La cadena >>" + cad + "<< es una cadena invalida... Error car:>>" + ct + "<< pos:" + ++pos + "\n";
+
             }
         }
         return log;
     }
 
     private String verTip(String l) {
-        if (l.length() >= 2 & l.charAt(0) == '"' & l.charAt(l.length() - 1) == '"') {
-            return "tex";
-        } else if (l.length() >= 1 & verNumero(l.charAt(0))) {
-            return "num";
-        } else if (l.length() >= 1 & verLetra(l.charAt(0))) {
-            return "id";
+        if (!l.equals("")) {
+            if (l.length() >= 2 & l.charAt(0) == '"' & l.charAt(l.length() - 1) == '"') {
+                return "tex";
+            } else if (l.length() >= 1 & verNumero(l.charAt(0))) {
+                return "num";
+            } else if (l.length() >= 1 & verLetra(l.charAt(0))) {
+                return "id";
+            }
         }
         return "";
     }

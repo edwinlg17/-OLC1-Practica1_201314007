@@ -27,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -66,17 +67,21 @@ public class Ventana extends JFrame {
 
     //////////////// CONTRUCTOR
     public Ventana() {
-        formatoFormulario();
-        formatoComponentes();
-        this.pack();
-        this.setSize(1000, 600);
-        this.setLocationRelativeTo(null);
+        try {
+            formatoFormulario();
+            formatoComponentes();
+            this.pack();
+            this.setSize(800, 600);
+            this.setLocationRelativeTo(null);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getCause() + " - " + e.getMessage() + " - " + e.getClass());
+        }
     }
 
     // Formato del Formulario
     private void formatoFormulario() {
+        this.getContentPane().setLayout(new GridBagLayout());
         this.setTitle("Practica 1");
-        this.setLayout(new GridBagLayout());
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
@@ -160,7 +165,7 @@ public class Ventana extends JFrame {
         jpEnt.setBorder(new TitledBorder("Entrada"));
 
         // text area entrada
-        jtaEnt = new JTextArea();
+        jtaEnt = new JTextArea("");
         jspEnt = new JScrollPane(jtaEnt);
         establecerGBC(0, 0, 2, 1, 0.7, 1.0);
         gbc.fill = GridBagConstraints.BOTH;
@@ -168,10 +173,10 @@ public class Ventana extends JFrame {
         jpEnt.add(jspEnt, gbc);
 
         // inserto panel entrada
-        establecerGBC(0, 0, 1, 1, 0.5, 1.0);
+        establecerGBC(0, 0, 1, 1, 0.7, 1.0);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(10, 10, 5, 5);
-        this.add(jpEnt, gbc);
+        this.getContentPane().add(jpEnt, gbc);
 
         //////////////////////////// Panel Visualizacion
         // panel Visualizacion
@@ -189,21 +194,14 @@ public class Ventana extends JFrame {
         });
 
         jspArb = new JScrollPane(jtArb);
-        establecerGBC(0, 0, 1, 1, 0.3, 1.0);
+        establecerGBC(0, 0, 1, 1, 0.35, 1.0);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(10, 10, 10, 5);
         jpVis.add(jspArb, gbc);
 
         // Panel Imagen
-        JLabel jl = new JLabel();
-
-        ImageIcon fot = new ImageIcon("src\\Imagenes\\default.jpg");
-        double w = fot.getIconHeight() * 0.95;
-        double h = fot.getIconWidth() * 0.95;
-        Icon icono = new ImageIcon(fot.getImage().getScaledInstance((int) h, (int) w, Image.SCALE_DEFAULT));
-        jl.setIcon(icono);
-
-        jspImg = new JScrollPane(jl);
+        JLabel jl = new JLabel("");
+        jspImg = new JScrollPane();
         jspImg.setViewportView(jl);
 
         establecerGBC(1, 0, 1, 1, 1.0, 1.0);
@@ -212,10 +210,10 @@ public class Ventana extends JFrame {
         jpVis.add(jspImg, gbc);
 
         // inserto panel Visualizacion
-        establecerGBC(1, 0, 1, 1, 0.5, 1.0);
+        establecerGBC(1, 0, 1, 1, 1.0, 1.0);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(10, 5, 5, 10);
-        this.add(jpVis, gbc);
+        this.getContentPane().add(jpVis, gbc);
 
         //////////////////////////// Panel Salida
         // panel salida
@@ -224,8 +222,7 @@ public class Ventana extends JFrame {
         jpSal.setBorder(new TitledBorder("Salida"));
 
         // text area salida
-        jtaSal = new JTextArea();
-//        jtaSal.setEnabled(false);
+        jtaSal = new JTextArea("\n\n\n\n");
         jspSal = new JScrollPane(jtaSal);
         establecerGBC(0, 0, 1, 1, 1.0, 1.0);
         gbc.fill = GridBagConstraints.BOTH;
@@ -236,8 +233,7 @@ public class Ventana extends JFrame {
         establecerGBC(0, 1, 2, 1, 1.0, 0.35);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(5, 10, 10, 10);
-        this.add(jpSal, gbc);
-
+        this.getContentPane().add(jpSal, gbc);
     }
 
     // Funcion que establece los parametros para el grid bag constraints
